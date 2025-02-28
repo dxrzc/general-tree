@@ -98,4 +98,9 @@ public:
 		}
 	};
 
+	general_tree() noexcept
+		: m_root(nullptr) {}
+
+	general_tree(const T& root_value) noexcept
+		: m_root(new private_node(root_value)) {}
 };
