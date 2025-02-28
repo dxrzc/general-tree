@@ -1,5 +1,7 @@
 #pragma once
 
+#include <queue>
+
 template <typename T>
 class general_tree
 {
@@ -16,8 +18,10 @@ private:
 	};
 
 	private_node* m_root;
+	std::size_t m_size;
 
 public:
+	// public node interface
 	class node
 	{
 	private:
@@ -33,24 +37,14 @@ public:
 		node(const T& data)
 			: m_node(new private_node(data)) {}
 
-		T& data() noexcept
+		[[nodiscard]] node left_son() const noexcept
 		{
-			return m_node->data;
-		}
-
-		const T& data() const noexcept
-		{
-			return m_node->data;
+			return m_node->m_left_son;
 		}
 
 		[[nodiscard]] node parent() const noexcept
 		{
 			return m_node->m_parent;
-		}
-
-		[[nodiscard]] node left_son() const noexcept
-		{
-			return m_node->m_left_son;
 		}
 
 		[[nodiscard]] node right_brother() const noexcept
@@ -77,32 +71,45 @@ public:
 		{
 			return m_node->m_left_son != nullptr;
 		}
-
-		node insert_left_son(const node& node)
-		{
-			node.m_node->m_parent = m_node;
-			node.m_node->m_right_brother = m_node->m_left_son;
-			m_node->m_left_son = node.m_node;
-			return node;
-		}
-
-		node insert_right_brother(const node& node)
-		{
-			if (m_node->m_parent == nullptr)
-				throw std::runtime_error("Cannot insert right brother to root");
-
-			node.m_node->m_parent = m_node->m_parent;
-			node.m_node->m_right_brother = m_node->m_right_brother;
-			m_node->m_right_brother = node.m_node;
-			return node;
-		}
 	};
 
 	general_tree() noexcept
-		: m_root(nullptr) {}
+		: m_root(nullptr), m_size(0) {}
 
 	general_tree(const T& root_value) noexcept
-		: m_root(new private_node(root_value)) {}
+		: m_root(new private_node(root_value)), m_size(1) {}
+
+	void insert_left_son(const node& tree, node new_node)
+	{
+		if (tree.m_node == nullptr)
+			throw std::runtime_error("Cannot insert left son to nullptr");
+		new_node.m_node->m_parent = tree.m_node;
+		new_node.m_node->m_right_brother = tree.m_node->m_left_son;
+		tree.m_node->m_left_son = new_node.m_node;
+		++m_size;		
+	}
+
+	void insert_right_brother(const node& tree, node new_node)
+	{
+		if (tree.m_node == nullptr)
+			throw std::runtime_error("Cannot insert left son to nullptr");
+		if (tree.m_node->m_parent == nullptr)
+			throw std::runtime_error("Cannot insert right brother to root");
+		new_node.m_node->m_parent = tree.m_node->m_parent;
+		new_node.m_node->m_right_brother = tree.m_node->m_right_brother;
+		tree.m_node->m_right_brother = new_node.m_node;
+		++m_size;
+	}
+
+	[[nodiscard]] const T& data(node node) const noexcept
+	{
+		return node.m_node->data;
+	}
+
+	[[nodiscard]] T& data(node node) noexcept
+	{
+		return node.m_node->data;
+	}	
 
 	node create_root(const T& data)
 	{
@@ -120,5 +127,10 @@ public:
 	bool empty() const noexcept
 	{
 		return m_root == nullptr;
+	}
+
+	[[nodiscard]] std::size_t size() const noexcept
+	{
+		return m_size;
 	}
 };
