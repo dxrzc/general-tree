@@ -10,11 +10,11 @@ private:
 	{
 		T data;
 		private_node* m_parent;
-		private_node* m_left_son;
-		private_node* m_right_brother;
+		private_node* m_left_child;
+		private_node* m_right_sibling;
 
-		private_node(const T& data, private_node* parent = nullptr, private_node* right_brother = nullptr, private_node* left_son = nullptr)
-			: data(data), m_parent(parent), m_left_son(left_son), m_right_brother(right_brother) {}
+		private_node(const T& data, private_node* parent = nullptr, private_node* right_sibling = nullptr, private_node* left_child = nullptr)
+			: data(data), m_parent(parent), m_left_child(left_child), m_right_sibling(right_sibling) {}
 	};
 
 	private_node* m_root;
@@ -37,9 +37,9 @@ public:
 		node(const T& data)
 			: m_node(new private_node(data)) {}
 
-		[[nodiscard]] node left_son() const noexcept
+		[[nodiscard]] node left_child() const noexcept
 		{
-			return m_node->m_left_son;
+			return m_node->m_left_child;
 		}
 
 		[[nodiscard]] node parent() const noexcept
@@ -47,9 +47,9 @@ public:
 			return m_node->m_parent;
 		}
 
-		[[nodiscard]] node right_brother() const noexcept
+		[[nodiscard]] node right_sibling() const noexcept
 		{
-			return m_node->m_right_brother;
+			return m_node->m_right_sibling;
 		}
 
 		bool is_root() const noexcept
@@ -59,17 +59,17 @@ public:
 
 		bool is_leaf() const noexcept
 		{
-			return m_node->m_left_son == nullptr;
+			return m_node->m_left_child == nullptr;
 		}
 
-		bool has_right_brother() const noexcept
+		bool has_right_sibling() const noexcept
 		{
-			return m_node->m_right_brother != nullptr;
+			return m_node->m_right_sibling != nullptr;
 		}
 
-		bool has_left_son() const noexcept
+		bool has_left_child() const noexcept
 		{
-			return m_node->m_left_son != nullptr;
+			return m_node->m_left_child != nullptr;
 		}
 	};
 
@@ -79,25 +79,25 @@ public:
 	general_tree(const T& root_value) noexcept
 		: m_root(new private_node(root_value)), m_size(1) {}
 
-	void insert_left_son(const node& tree, node new_node)
+	void insert_left_child(const node& tree, node new_node)
 	{
 		if (tree.m_node == nullptr)
-			throw std::runtime_error("Cannot insert left son to nullptr");
+			throw std::runtime_error("Cannot insert left child to nullptr");
 		new_node.m_node->m_parent = tree.m_node;
-		new_node.m_node->m_right_brother = tree.m_node->m_left_son;
-		tree.m_node->m_left_son = new_node.m_node;
+		new_node.m_node->m_right_sibling = tree.m_node->m_left_child;
+		tree.m_node->m_left_child = new_node.m_node;
 		++m_size;		
 	}
 
-	void insert_right_brother(const node& tree, node new_node)
+	void insert_right_sibling(const node& tree, node new_node)
 	{
 		if (tree.m_node == nullptr)
-			throw std::runtime_error("Cannot insert left son to nullptr");
+			throw std::runtime_error("Cannot insert right sibling to nullptr");
 		if (tree.m_node->m_parent == nullptr)
-			throw std::runtime_error("Cannot insert right brother to root");
+			throw std::runtime_error("Cannot insert right sibling to root");
 		new_node.m_node->m_parent = tree.m_node->m_parent;
-		new_node.m_node->m_right_brother = tree.m_node->m_right_brother;
-		tree.m_node->m_right_brother = new_node.m_node;
+		new_node.m_node->m_right_sibling = tree.m_node->m_right_sibling;
+		tree.m_node->m_right_sibling = new_node.m_node;
 		++m_size;
 	}
 
