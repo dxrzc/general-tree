@@ -103,4 +103,22 @@ public:
 
 	general_tree(const T& root_value) noexcept
 		: m_root(new private_node(root_value)) {}
+
+	node create_root(const T& data)
+	{
+		if (m_root != nullptr)
+			throw std::runtime_error("Root already exists");
+		m_root = new private_node(data);
+		return m_root;
+	}
+
+	[[nodiscard]] node root() const noexcept
+	{
+		return m_root;
+	}
+
+	bool empty() const noexcept
+	{
+		return m_root == nullptr;
+	}
 };
