@@ -24,18 +24,22 @@ public:
 	// public node interface
 	class node
 	{
-	private:
-		private_node* m_node;
-
-		// in order to allow the general_tree class to access the private constructor
 		friend class general_tree;
 
-		node(private_node* node) noexcept
-			: m_node(node) {}
+	private:
+		private_node* m_node;				
 
 	public:
 		node(const T& data)
 			: m_node(new private_node(data)) {}
+
+		node(private_node* node = nullptr) noexcept
+			: m_node(node) {}
+		
+		bool operator==(const node& other) const noexcept
+		{
+			return m_node == other.m_node;
+		}
 
 		[[nodiscard]] node left_child() const noexcept
 		{
@@ -71,6 +75,19 @@ public:
 		{
 			return m_node->m_left_child != nullptr;
 		}
+
+		bool isNull() const noexcept
+		{
+			return m_node == nullptr;
+		}		
+
+		std::size_t children_count() const noexcept
+		{
+			std::size_t count = 0;
+			for (auto child = m_node->m_left_child; child != nullptr; child = child->m_right_sibling)
+				++count;
+			return count;
+		}		
 	};
 
 	general_tree() noexcept
@@ -79,7 +96,7 @@ public:
 	general_tree(const T& root_value) noexcept
 		: m_root(new private_node(root_value)), m_size(1) {}
 
-	void insert_left_child(const node& tree, node new_node)
+	node insert_left_child(const node& tree, node new_node)
 	{
 		if (tree.m_node == nullptr)
 			throw std::runtime_error("Cannot insert left child to nullptr");
@@ -87,9 +104,10 @@ public:
 		new_node.m_node->m_right_sibling = tree.m_node->m_left_child;
 		tree.m_node->m_left_child = new_node.m_node;
 		++m_size;		
+		return new_node;
 	}
 
-	void insert_right_sibling(const node& tree, node new_node)
+	node insert_right_sibling(const node& tree, node new_node)
 	{
 		if (tree.m_node == nullptr)
 			throw std::runtime_error("Cannot insert right sibling to nullptr");
@@ -99,6 +117,7 @@ public:
 		new_node.m_node->m_right_sibling = tree.m_node->m_right_sibling;
 		tree.m_node->m_right_sibling = new_node.m_node;
 		++m_size;
+		return new_node;
 	}
 
 	[[nodiscard]] const T& data(node node) const noexcept
