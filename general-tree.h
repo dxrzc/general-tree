@@ -75,7 +75,7 @@ public:
 			return m_node->m_left_child != nullptr;
 		}
 
-		bool isNull() const noexcept
+		bool is_null() const noexcept
 		{
 			return m_node == nullptr;
 		}		
