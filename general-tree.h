@@ -17,8 +17,7 @@ private:
 			: data(data), m_parent(parent), m_left_child(left_child), m_right_sibling(right_sibling) {}
 	};
 
-	private_node* m_root;
-	std::size_t m_size;
+	private_node* m_root;	
 
 public:
 	// public node interface
@@ -91,10 +90,10 @@ public:
 	};
 
 	general_tree() noexcept
-		: m_root(nullptr), m_size(0) {}
+		: m_root(nullptr) {}
 
 	general_tree(const T& root_value) noexcept
-		: m_root(new private_node(root_value)), m_size(1) {}
+		: m_root(new private_node(root_value)) {}
 
 	node insert_left_child(const node& tree, node new_node)
 	{
@@ -102,8 +101,7 @@ public:
 			throw std::runtime_error("Cannot insert left child to nullptr");
 		new_node.m_node->m_parent = tree.m_node;
 		new_node.m_node->m_right_sibling = tree.m_node->m_left_child;
-		tree.m_node->m_left_child = new_node.m_node;
-		++m_size;		
+		tree.m_node->m_left_child = new_node.m_node;		
 		return new_node;
 	}
 
@@ -116,7 +114,6 @@ public:
 		new_node.m_node->m_parent = tree.m_node->m_parent;
 		new_node.m_node->m_right_sibling = tree.m_node->m_right_sibling;
 		tree.m_node->m_right_sibling = new_node.m_node;
-		++m_size;
 		return new_node;
 	}
 
@@ -146,10 +143,5 @@ public:
 	bool empty() const noexcept
 	{
 		return m_root == nullptr;
-	}
-
-	[[nodiscard]] std::size_t size() const noexcept
-	{
-		return m_size;
 	}
 };
