@@ -1,6 +1,8 @@
 #pragma once
 
+#include <utility>
 #include <queue>
+#include <stdexcept>
 
 template <typename T>
 class general_tree
@@ -13,7 +15,6 @@ private:
 		private_node* m_left_child;
 		private_node* m_right_sibling;
 
-		// forward constructor
 		template<typename... Args>
 		private_node(
 			private_node* parent,
@@ -38,23 +39,6 @@ private:
 
 	private_node* m_root;
 
-	template<typename ...Args>
-	private_node* emplace_left_child(private_node* destiny, Args&& ...args)
-	{
-		if (destiny == nullptr)
-			throw std::invalid_argument("Cannot insert left child to null node");
-
-		private_node* new_node = new private_node(
-			destiny,
-			destiny->m_left_child,
-			nullptr,
-			std::forward<Args>(args)...
-		);
-		destiny->m_left_child = new_node;
-
-		return new_node;
-	}
-
 public:
 	// public node interface
 	class node
@@ -65,6 +49,7 @@ public:
 		private_node* m_node;
 
 	public:
+		// TODO: forwarding or a stdmove version
 		node(const T& data)
 			: m_node(new private_node(data)) {}
 
@@ -128,8 +113,26 @@ public:
 	general_tree() noexcept
 		: m_root(nullptr) {}
 
+	// TODO: forwarding or a stdmove version
 	general_tree(const T& root_value)
 		: m_root(new private_node(root_value)) {}
+
+	template<typename ...Args>
+	private_node* emplace_left_child(node destiny, Args&& ...args)
+	{
+		if (destiny.m_node == nullptr)
+			throw std::invalid_argument("Cannot insert left child to null node");
+
+		private_node* new_node = new private_node(
+			destiny.m_node,
+			destiny.m_node->m_left_child,
+			nullptr,
+			std::forward<Args>(args)...
+		);
+		destiny.m_node->m_left_child = new_node;
+
+		return new_node;
+	}
 
 	node insert_left_child(node destiny, node& child_node)
 	{
@@ -153,7 +156,7 @@ public:
 		return emplace_left_child(destiny.m_node, std::forward<U>(new_node_value));
 	}
 
-	// TODO: rewrite
+	// TODO: remake
 	node insert_right_sibling(const node& tree, node new_node)
 	{
 		if (tree.m_node == nullptr)
