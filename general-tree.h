@@ -3,6 +3,7 @@
 #include <utility>
 #include <queue>
 #include <stdexcept>
+#include <optional>
 
 template <typename T>
 class general_tree
@@ -100,14 +101,6 @@ public:
 		{
 			return m_node == nullptr;
 		}
-
-		std::size_t children_count() const noexcept
-		{
-			std::size_t count = 0;
-			for (auto child = m_node->m_left_child; child != nullptr; child = child->m_right_sibling)
-				++count;
-			return count;
-		}
 	};
 
 	general_tree() noexcept
@@ -138,6 +131,9 @@ public:
 		if (!destiny.m_node)
 			throw std::invalid_argument("Cannot insert left child to null node");
 
+		if (destiny.m_node == tree.m_root)
+			throw std::invalid_argument("Cannot insert a tree as its own child");
+
 		if (tree.m_root)
 		{
 			tree.m_root->m_parent = destiny.m_node;
@@ -151,7 +147,7 @@ public:
 	void insert_left_child(node destiny, U&& new_node_value)
 	{
 		emplace_left_child(destiny, std::forward<U>(new_node_value));
-	}	
+	}
 
 	//template<typename ...Args>
 	//node emplace_right_sibling(node destiny, Args&& ...args)
@@ -212,6 +208,32 @@ public:
 			throw std::runtime_error("Root already exists");
 		m_root = new private_node(data);
 		return m_root;
+	}
+
+	std::size_t children_count(node n) const noexcept
+	{
+		std::size_t count = 0;
+		for (auto child = n.left_child(); !child.is_null(); child = child.right_sibling())
+			++count;
+		return count;
+	}
+
+	std::optional<std::size_t> height(node n) const noexcept
+	{
+		if (!n.m_node)
+			return std::nullopt;
+
+		std::size_t max_height = 0;
+
+		for (private_node* ptr = n.m_node->m_left_child; ptr != nullptr; ptr = ptr->m_right_sibling)
+		{
+			std::optional<std::size_t> child_height_opt = height(ptr);
+
+			if (child_height_opt.has_value() && child_height_opt.value() > max_height)
+				max_height = child_height_opt.value();
+		}
+
+		return (n.m_node->m_left_child ? 1 + max_height : 0);
 	}
 
 	[[nodiscard]] node root() const noexcept
