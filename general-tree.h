@@ -118,7 +118,7 @@ public:
 		: m_root(new private_node(root_value)) {}
 
 	template<typename ...Args>
-	private_node* emplace_left_child(node destiny, Args&& ...args)
+	void emplace_left_child(node destiny, Args&& ...args)
 	{
 		if (destiny.m_node == nullptr)
 			throw std::invalid_argument("Cannot insert left child to null node");
@@ -129,49 +129,71 @@ public:
 			nullptr,
 			std::forward<Args>(args)...
 		);
-		destiny.m_node->m_left_child = new_node;
 
-		return new_node;
+		destiny.m_node->m_left_child = new_node;
 	}
 
-	node insert_left_child(node destiny, node& child_node)
+	void insert_left_child(node destiny, general_tree<T>& tree)
 	{
-		if (destiny.m_node == nullptr)
+		if (!destiny.m_node)
 			throw std::invalid_argument("Cannot insert left child to null node");
 
-		if (child_node.m_node == nullptr)
-			throw std::invalid_argument("Cannot insert null node as a child");
-
-		child_node.m_node->m_parent = destiny.m_node;
-		child_node.m_node->m_right_sibling = destiny.m_node->m_left_child;
-		destiny.m_node->m_left_child = child_node.m_node;
-		child_node.m_node = nullptr;
-
-		return child_node;
+		if (tree.m_root)
+		{
+			tree.m_root->m_parent = destiny.m_node;
+			tree.m_root->m_right_sibling = destiny.m_node->m_left_child;
+			destiny.m_node->m_left_child = tree.m_root;
+			tree.m_root = nullptr;
+		}
 	}
 
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-	node insert_left_child(node destiny, U&& new_node_value)
+	void insert_left_child(node destiny, U&& new_node_value)
 	{
-		return emplace_left_child(destiny.m_node, std::forward<U>(new_node_value));
-	}
+		emplace_left_child(destiny, std::forward<U>(new_node_value));
+	}	
 
-	// TODO: remake
-	node insert_right_sibling(const node& tree, node new_node)
-	{
-		if (tree.m_node == nullptr)
-			throw std::invalid_argument("Cannot insert right sibling to nullptr");
+	//template<typename ...Args>
+	//node emplace_right_sibling(node destiny, Args&& ...args)
+	//{
+	//	if (destiny.m_node == nullptr)
+	//		throw std::invalid_argument("Cannot insert right sibling to null node");
 
-		if (tree.m_node->m_parent == nullptr)
-			throw std::invalid_argument("Cannot insert right sibling to root");
+	//	if (destiny.m_node->m_parent == nullptr)
+	//		throw std::invalid_argument("Cannot insert right sibling to root");
 
-		new_node.m_node->m_parent = tree.m_node->m_parent;
-		new_node.m_node->m_right_sibling = tree.m_node->m_right_sibling;
-		tree.m_node->m_right_sibling = new_node.m_node;
-		// TODO: new_node null
+	//	private_node* new_node = new private_node(
+	//		destiny.m_node->m_parent,
+	//		destiny.m_node->m_right_sibling,
+	//		nullptr,
+	//		std::forward<Args>(args)...
+	//	);
+	//	destiny.m_node->m_right_sibling = new_node;
 
-		return new_node;
-	}
+	//	return new_node;
+	//}
+
+	 //node insert_right_sibling(node destiny, node& child_node)
+	 //{
+	 //	if (destiny.m_node == nullptr)
+	 //		throw std::invalid_argument("Cannot insert right sibling to nullptr");
+	 //
+	 //	if (destiny.m_node->m_parent == nullptr)
+	 //		throw std::invalid_argument("Cannot insert right sibling to root");
+	 //
+	 //	child_node.m_node->m_parent = destiny.m_node->m_parent;
+	 //	child_node.m_node->m_right_sibling = destiny.m_node->m_right_sibling;
+	 //	destiny.m_node->m_right_sibling = child_node.m_node;
+	 //	child_node.m_node = nullptr;
+	 //
+	 //	return child_node;
+	 //}
+	 //
+	 //template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+	 //node insert_right_sibling(node destiny, U&& new_node_value)
+	 //{
+	 //	return emplace_right_sibling(destiny, std::forward<U>(new_node_value));
+	 //}
 
 	[[nodiscard]] const T& data(node node) const noexcept
 	{
