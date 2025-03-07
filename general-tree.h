@@ -111,7 +111,7 @@ public:
 		: m_root(new private_node(root_value)) {}
 
 	template<typename ...Args>
-	void emplace_left_child(node destiny, Args&& ...args)
+	node emplace_left_child(node destiny, Args&& ...args)
 	{
 		if (destiny.m_node == nullptr)
 			throw std::invalid_argument("Cannot insert left child to null node");
@@ -124,9 +124,11 @@ public:
 		);
 
 		destiny.m_node->m_left_child = new_node;
+
+		return new_node;
 	}
 
-	void insert_left_child(node destiny, general_tree<T>& tree)
+	node insert_left_child(node destiny, general_tree<T>& tree)
 	{
 		if (!destiny.m_node)
 			throw std::invalid_argument("Cannot insert left child to null node");
@@ -140,13 +142,17 @@ public:
 			tree.m_root->m_right_sibling = destiny.m_node->m_left_child;
 			destiny.m_node->m_left_child = tree.m_root;
 			tree.m_root = nullptr;
+			return destiny.m_node->m_left_child;
 		}
+
+		return node(nullptr);
 	}
 
+	// TODO: test
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-	void insert_left_child(node destiny, U&& new_node_value)
+	node insert_left_child(node destiny, U&& new_node_value)
 	{
-		emplace_left_child(destiny, std::forward<U>(new_node_value));
+		return emplace_left_child(destiny, std::forward<U>(new_node_value));
 	}
 
 	//template<typename ...Args>
@@ -208,12 +214,13 @@ public:
 	}
 
 	// TODO: forwarding
-	void create_root(const T& data)
+	node create_root(const T& data)
 	{
 		if (m_root != nullptr)
 			throw std::runtime_error("Root already exists");
 
 		m_root = new private_node(data);
+		return m_root;
 	}
 
 	[[nodiscard]] std::size_t children_count(node n) const
