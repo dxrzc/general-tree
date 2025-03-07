@@ -191,46 +191,56 @@ public:
 	 //	return emplace_right_sibling(destiny, std::forward<U>(new_node_value));
 	 //}
 
-	[[nodiscard]] const T& data(node node) const noexcept
+	[[nodiscard]] const T& data(node node) const
 	{
+		if (node.m_node == nullptr)
+			throw std::invalid_argument("Cannot get data from null node");
+
 		return node.m_node->data;
 	}
 
-	[[nodiscard]] T& data(node node) noexcept
+	[[nodiscard]] T& data(node node)
 	{
+		if (node.m_node == nullptr)
+			throw std::invalid_argument("Cannot get data from null node");
+
 		return node.m_node->data;
 	}
 
 	// TODO: forwarding
-	node create_root(const T& data)
+	void create_root(const T& data)
 	{
 		if (m_root != nullptr)
 			throw std::runtime_error("Root already exists");
+
 		m_root = new private_node(data);
-		return m_root;
 	}
 
-	std::size_t children_count(node n) const noexcept
+	[[nodiscard]] std::size_t children_count(node n) const
 	{
+		if (n.m_node == nullptr)
+			throw std::invalid_argument("Cannot count children of null node");
+
 		std::size_t count = 0;
 		for (auto child = n.left_child(); !child.is_null(); child = child.right_sibling())
 			++count;
 		return count;
 	}
 
-	std::optional<std::size_t> height(node n) const noexcept
+	[[nodiscard]] std::size_t height(node n) const
 	{
-		if (!n.m_node)
-			return std::nullopt;
+		if (n.m_node == nullptr)
+			throw std::invalid_argument("Cannot get height of null node");
 
 		std::size_t max_height = 0;
-
 		for (private_node* ptr = n.m_node->m_left_child; ptr != nullptr; ptr = ptr->m_right_sibling)
 		{
-			std::optional<std::size_t> child_height_opt = height(ptr);
-
-			if (child_height_opt.has_value() && child_height_opt.value() > max_height)
-				max_height = child_height_opt.value();
+			if (ptr != nullptr)
+			{
+				std::size_t child_height = height(ptr);
+				if (child_height > max_height)
+					max_height = child_height;
+			}
 		}
 
 		return (n.m_node->m_left_child ? 1 + max_height : 0);
