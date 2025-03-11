@@ -7,6 +7,22 @@ TEST(Node, defaultNodeIsNull)
 	EXPECT_TRUE(node.is_null());
 }
 
+// boolean operator
+
+TEST(Node, booleanOperator_returnTrueIfNodeIsNotNull)
+{	
+	general_tree<int> tree(1);
+	general_tree<int>::node node = tree.root();
+	EXPECT_TRUE(node);
+}
+
+TEST(Node, booleanOperator_returnFalseIfNodeIsNull)
+{
+	general_tree<int> empty_tree;
+	general_tree<int>::node node = empty_tree.root();
+	EXPECT_FALSE(node);
+}
+
 // left_child
 
 TEST(Node, leftChild_ReturnLeftChild)

@@ -62,6 +62,11 @@ public:
 			return m_node == other.m_node;
 		}
 
+		explicit operator bool() const
+		{
+			return m_node != nullptr;
+		}
+
 		[[nodiscard]] node left_child() const noexcept
 		{
 			return m_node->m_left_child;
@@ -110,6 +115,7 @@ public:
 	general_tree(const T& root_value)
 		: m_root(new private_node(root_value)) {}
 
+	// TODO: test
 	template<typename ...Args>
 	node emplace_left_child(node destiny, Args&& ...args)
 	{
@@ -155,6 +161,7 @@ public:
 		return emplace_left_child(destiny, std::forward<U>(new_node_value));
 	}
 
+	// TODO: test
 	template<typename ...Args>
 	node emplace_right_sibling(node destiny, Args&& ...args)
 	{
@@ -199,6 +206,7 @@ public:
 		return node(nullptr);
 	}
 
+	// TODO: test
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node insert_right_sibling(node destiny, U&& new_node_value)
 	{
