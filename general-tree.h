@@ -62,6 +62,29 @@ public:
 			return m_node == other.m_node;
 		}
 
+		bool operator<(const node& other) const
+		{
+			if (m_node == nullptr || other.m_node == nullptr)
+				throw std::invalid_argument("Cannot compare null nodes");
+
+			return m_node->data < other.m_node->data;
+		}
+
+        bool operator<=(const node& other) const
+        {
+			return !(other < *this);
+        }
+
+        bool operator>(const node& other) const
+        {
+			return other < *this;
+        }
+
+        bool operator>=(const node& other) const
+        {
+			return !(*this < other);
+        }
+
 		explicit operator bool() const
 		{
 			return m_node != nullptr;
@@ -82,16 +105,16 @@ public:
 			return m_node->m_right_sibling;
 		}
 
-	   /**
-		* @brief Retrieves the child node at the specified index.		
-		* @param index The index of the child node to retrieve.
-		* @return The child node at the specified index. It can return a null node.
-		* @throws std::out_of_range Index is out of range.
-		* @throws std::invalid_argument Current node is null.		
-		*/
+		/**
+		 * @brief Retrieves the child node at the specified index.
+		 * @param index The index of the child node to retrieve.
+		 * @return The child node at the specified index. It can return a null node.
+		 * @throws std::out_of_range Index is out of range.
+		 * @throws std::invalid_argument Current node is null.
+		 */
 		[[nodiscard]] node child(std::size_t index) const
 		{
-			if(m_node == nullptr)
+			if (m_node == nullptr)
 				throw std::invalid_argument("Cannot get child of null node");
 
 			node child = m_node->m_left_child;
