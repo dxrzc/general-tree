@@ -82,6 +82,30 @@ public:
 			return m_node->m_right_sibling;
 		}
 
+	   /**
+		* @brief Retrieves the child node at the specified index.		
+		* @param index The index of the child node to retrieve.
+		* @return The child node at the specified index. It can return a null node.
+		* @throws std::out_of_range Index is out of range.
+		* @throws std::invalid_argument Current node is null.		
+		*/
+		[[nodiscard]] node child(std::size_t index) const
+		{
+			if(m_node == nullptr)
+				throw std::invalid_argument("Cannot get child of null node");
+
+			node child = m_node->m_left_child;
+
+			for (std::size_t i = 0; i < index; i++)
+			{
+				if (child.m_node == nullptr)
+					throw std::out_of_range("Index out of range");
+				child = child.m_node->m_right_sibling;
+			}
+
+			return child;
+		}
+
 		bool is_root() const noexcept
 		{
 			return m_node->m_parent == nullptr;
