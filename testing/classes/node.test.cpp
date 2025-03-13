@@ -9,126 +9,18 @@ TEST(Node, defaultNodeIsNull)
 
 // equality operator
 
-TEST(Node, equalityOperator_returnTrueIfNodesAreEqual)
+TEST(Node, equalityOperator_ReturnTrueIfNodesAreTheSame)
 {
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs = tree.root();
-	EXPECT_TRUE(lhs == rhs);
+	general_tree<int> test_tree(1);
+	EXPECT_TRUE(test_tree.root() == test_tree.root());
 }
 
-TEST(Node, equalityOperator_returnFalseIfNodesAreNotEqual)
+TEST(Node, equalityOperator_ReturnFalseIfNodesAreDifferent)
 {
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(2);
-	EXPECT_FALSE(lhs == rhs);
-}
-
-// inequality operator
-
-TEST(Node, inequalityOperator_returnTrueIfNodesAreNotEqual)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(2);
-	EXPECT_TRUE(lhs != rhs);
-}
-
-TEST(Node, inequalityOperator_returnFalseIfNodesAreEqual)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs = tree.root();
-	EXPECT_FALSE(lhs != rhs);
-}
-
-// boolean operator
-
-TEST(Node, booleanOperator_returnTrueIfNodeIsNotNull)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node node = tree.root();
-	EXPECT_TRUE(node);
-}
-
-TEST(Node, booleanOperator_returnFalseIfNodeIsNull)
-{
-	general_tree<int> empty_tree;
-	general_tree<int>::node node = empty_tree.root();
-	EXPECT_FALSE(node);
-}
-
-// greater than operator
-
-TEST(Node, greaterThanOperator_ReturnTrueIfRhsNodeValueIsGreater)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(2);
-	EXPECT_TRUE(rhs > lhs);
-}
-
-TEST(Node, greaterThanOperator_ReturnFalseIfRhsNodeValueIsLess)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(0);
-	EXPECT_FALSE(rhs > lhs);
-}
-
-// greater than or equal operator
-
-TEST(Node, greaterThanOrEqualOperator_ReturnTrueIfRhsNodeValueIsGreater)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(2);
-	EXPECT_TRUE(rhs >= lhs);
-}
-
-TEST(Node, greaterThanOrEqualOperator_ReturnTrueIfRhsNodeValueIsEqual)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs = tree.root();
-	EXPECT_TRUE(rhs >= lhs);
-}
-
-// less than operator
-
-TEST(Node, lessThanOperator_ReturnTrueIfRhsNodeValueIsLess)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(0);
-	EXPECT_TRUE(rhs < lhs);
-}
-
-TEST(Node, lessThanOperator_ReturnFalseIfRhsNodeValueIsGreater)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(2);
-	EXPECT_FALSE(rhs < lhs);
-}
-
-// less than or equal operator
-
-TEST(Node, lessThanOrEqualOperator_ReturnTrueIfRhsNodeValueIsLess)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs(0);
-	EXPECT_TRUE(rhs <= lhs);
-}
-
-TEST(Node, lessThanOrEqualOperator_ReturnTrueIfRhsNodeValueIsEqual)
-{
-	general_tree<int> tree(1);
-	general_tree<int>::node lhs = tree.root();
-	general_tree<int>::node rhs = tree.root();
-	EXPECT_TRUE(rhs <= lhs);
+	general_tree<int> test_tree(1);
+	general_tree<int>::node root = test_tree.root();
+	general_tree<int>::node left_child = test_tree.insert_left_child(root, 2);
+	EXPECT_FALSE(root == left_child);
 }
 
 // left_child

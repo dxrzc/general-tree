@@ -51,40 +51,11 @@ public:
 
 	public:
 		node(private_node* node = nullptr) noexcept
-			: m_node(node) {}
-		
-		// TODO: DELETE
-		node(const T& data) : node()
-		{
-			m_node = new private_node(data);
-		}
+			: m_node(node) {}	
 
 		bool operator==(const node& other) const noexcept
 		{
 			return m_node == other.m_node;
-		}
-
-		bool operator<(const node& other) const
-		{
-			if (m_node == nullptr || other.m_node == nullptr)
-				throw std::invalid_argument("Cannot compare null nodes");
-
-			return m_node->data < other.m_node->data;
-		}
-
-		bool operator<=(const node& other) const
-		{
-			return !(other < *this);
-		}
-
-		bool operator>(const node& other) const
-		{
-			return other < *this;
-		}
-
-		bool operator>=(const node& other) const
-		{
-			return !(*this < other);
 		}
 
 		explicit operator bool() const
