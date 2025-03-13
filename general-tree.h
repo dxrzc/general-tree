@@ -50,12 +50,14 @@ public:
 		private_node* m_node;
 
 	public:
-		// TODO: forwarding or a stdmove version
-		node(const T& data)
-			: m_node(new private_node(data)) {}
-
 		node(private_node* node = nullptr) noexcept
 			: m_node(node) {}
+		
+		// TODO: DELETE
+		node(const T& data) : node()
+		{
+			m_node = new private_node(data);
+		}
 
 		bool operator==(const node& other) const noexcept
 		{
@@ -70,20 +72,20 @@ public:
 			return m_node->data < other.m_node->data;
 		}
 
-        bool operator<=(const node& other) const
-        {
+		bool operator<=(const node& other) const
+		{
 			return !(other < *this);
-        }
+		}
 
-        bool operator>(const node& other) const
-        {
+		bool operator>(const node& other) const
+		{
 			return other < *this;
-        }
+		}
 
-        bool operator>=(const node& other) const
-        {
+		bool operator>=(const node& other) const
+		{
 			return !(*this < other);
-        }
+		}
 
 		explicit operator bool() const
 		{
@@ -158,9 +160,16 @@ public:
 	general_tree() noexcept
 		: m_root(nullptr) {}
 
-	// TODO: forwarding or a stdmove version
-	general_tree(const T& root_value)
-		: m_root(new private_node(root_value)) {}
+	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+	general_tree(U&& root_value): general_tree()
+	{
+		m_root = new private_node(
+			nullptr,
+			nullptr,
+			nullptr,
+			std::forward<U>(root_value)
+		);
+	}
 
 	// TODO: test
 	template<typename ...Args>
@@ -276,14 +285,26 @@ public:
 		return node.m_node->data;
 	}
 
-	// TODO: forwarding
-	node create_root(const T& data)
+	template<typename ...Args>
+	node emplace_root(Args&& ...args)
 	{
 		if (m_root != nullptr)
 			throw std::runtime_error("Root already exists");
 
-		m_root = new private_node(data);
+		m_root = new private_node(
+			nullptr,
+			nullptr,
+			nullptr,
+			std::forward<Args>(args)...
+		);
+
 		return m_root;
+	}
+
+	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+	node create_root(U&& data)
+	{
+		return emplace_root(std::forward<U>(data));
 	}
 
 	[[nodiscard]] std::size_t children_count(node n) const
