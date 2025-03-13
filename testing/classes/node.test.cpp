@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(Node, defaultNodeIsNull)
+TEST(node_class, defaultNodeIsNull)
 {
 	general_tree<int>::node node;
 	EXPECT_TRUE(node.is_null());
@@ -9,13 +9,13 @@ TEST(Node, defaultNodeIsNull)
 
 // equality operator
 
-TEST(Node, equalityOperator_ReturnTrueIfNodesAreTheSame)
+TEST(node_class, equalityOperator_ReturnTrueIfNodesAreTheSame)
 {
 	general_tree<int> test_tree(1);
 	EXPECT_TRUE(test_tree.root() == test_tree.root());
 }
 
-TEST(Node, equalityOperator_ReturnFalseIfNodesAreDifferent)
+TEST(node_class, equalityOperator_ReturnFalseIfNodesAreDifferent)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -25,7 +25,7 @@ TEST(Node, equalityOperator_ReturnFalseIfNodesAreDifferent)
 
 // left_child
 
-TEST(Node, leftChild_ReturnLeftChild)
+TEST(node_class, leftChild_ReturnLeftChild)
 {
 	general_tree<int> tree(1);
 
@@ -35,7 +35,7 @@ TEST(Node, leftChild_ReturnLeftChild)
 	EXPECT_EQ(tree.data(tree.root().left_child()), left_child_value);
 }
 
-TEST(Node, leftChild_ReturnNullNodeIfLeftChildDoesNotExist)
+TEST(node_class, leftChild_ReturnNullNodeIfLeftChildDoesNotExist)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node left_child = test_tree.root().left_child();
@@ -44,7 +44,7 @@ TEST(Node, leftChild_ReturnNullNodeIfLeftChildDoesNotExist)
 
 // parent
 
-TEST(Node, parent_ReturnTheParent)
+TEST(node_class, parent_ReturnTheParent)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node left_child = test_tree.insert_left_child(test_tree.root(), 2);
@@ -52,7 +52,7 @@ TEST(Node, parent_ReturnTheParent)
 	EXPECT_EQ(left_child.parent(), test_tree.root());
 }
 
-TEST(Node, parent_ReturnNullNodeIfParentDoesNotExist)
+TEST(node_class, parent_ReturnNullNodeIfParentDoesNotExist)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -61,7 +61,7 @@ TEST(Node, parent_ReturnNullNodeIfParentDoesNotExist)
 
 // right_sibling
 
-TEST(Node, right_sibling_ReturnRightSibling)
+TEST(node_class, right_sibling_ReturnRightSibling)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -71,7 +71,7 @@ TEST(Node, right_sibling_ReturnRightSibling)
 	EXPECT_EQ(left_child.right_sibling(), right_sibling);
 }
 
-TEST(Node, right_sibling_ReturnNullNodeIfRightSiblingDoesNotExist)
+TEST(node_class, right_sibling_ReturnNullNodeIfRightSiblingDoesNotExist)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -81,14 +81,14 @@ TEST(Node, right_sibling_ReturnNullNodeIfRightSiblingDoesNotExist)
 
 // is_root
 
-TEST(Node, is_root_ReturnTrueIfNodeIsRoot)
+TEST(node_class, is_root_ReturnTrueIfNodeIsRoot)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
 	EXPECT_TRUE(root.is_root());
 }
 
-TEST(Node, is_root_ReturnFalseIfNodeIsNotRoot)
+TEST(node_class, is_root_ReturnFalseIfNodeIsNotRoot)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -98,14 +98,14 @@ TEST(Node, is_root_ReturnFalseIfNodeIsNotRoot)
 
 // is_leaf
 
-TEST(Node, is_leaf_ReturnTrueIfNodeIsLeaf)
+TEST(node_class, is_leaf_ReturnTrueIfNodeIsLeaf)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
 	EXPECT_TRUE(root.is_leaf());
 }
 
-TEST(Node, is_leaf_ReturnFalseIfNodeIsNotLeaf)
+TEST(node_class, is_leaf_ReturnFalseIfNodeIsNotLeaf)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -115,7 +115,7 @@ TEST(Node, is_leaf_ReturnFalseIfNodeIsNotLeaf)
 
 // has_right_sibling
 
-TEST(Node, has_right_sibling_ReturnTrueIfNodeHasRightSibling)
+TEST(node_class, has_right_sibling_ReturnTrueIfNodeHasRightSibling)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -126,7 +126,7 @@ TEST(Node, has_right_sibling_ReturnTrueIfNodeHasRightSibling)
 	EXPECT_TRUE(left_child.has_right_sibling());
 }
 
-TEST(Node, has_right_sibling_ReturnFalseIfNodeHasNoRightSibling)
+TEST(node_class, has_right_sibling_ReturnFalseIfNodeHasNoRightSibling)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -138,7 +138,7 @@ TEST(Node, has_right_sibling_ReturnFalseIfNodeHasNoRightSibling)
 
 // has_left_child
 
-TEST(Node, has_left_child_ReturnTrueIfNodeHasLeftChild)
+TEST(node_class, has_left_child_ReturnTrueIfNodeHasLeftChild)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -146,7 +146,7 @@ TEST(Node, has_left_child_ReturnTrueIfNodeHasLeftChild)
 	EXPECT_TRUE(root.has_left_child());
 }
 
-TEST(Node, has_left_child_ReturnFalseIfNodeHasNoLeftChild)
+TEST(node_class, has_left_child_ReturnFalseIfNodeHasNoLeftChild)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node root = test_tree.root();
@@ -155,13 +155,13 @@ TEST(Node, has_left_child_ReturnFalseIfNodeHasNoLeftChild)
 
 // isNull
 
-TEST(Node, isNull_ReturnTrueIfNodeIsNull)
+TEST(node_class, isNull_ReturnTrueIfNodeIsNull)
 {
 	general_tree<int>::node node;
 	EXPECT_TRUE(node.is_null());
 }
 
-TEST(Node, isNull_ReturnFalseIfNodeIsNotNull)
+TEST(node_class, isNull_ReturnFalseIfNodeIsNotNull)
 {
 	general_tree<int> test_tree(1);
 	EXPECT_FALSE(test_tree.root().is_null());
@@ -169,7 +169,7 @@ TEST(Node, isNull_ReturnFalseIfNodeIsNotNull)
 
 // child
 
-TEST(Node, child_NodeIsNullptr)
+TEST(node_class, child_NodeIsNullptr)
 {
 	general_tree<int>::node node;
 	EXPECT_THROW({
@@ -180,7 +180,7 @@ TEST(Node, child_NodeIsNullptr)
 	);
 }
 
-TEST(Node, child_IndexZeroReturnsTheFirstChild)
+TEST(node_class, child_IndexZeroReturnsTheFirstChild)
 {
 	general_tree<int> test_tree(1);
 	auto first_child = test_tree.insert_left_child(test_tree.root(), 2);
@@ -189,7 +189,7 @@ TEST(Node, child_IndexZeroReturnsTheFirstChild)
 	EXPECT_EQ(test_tree.root().child(0), first_child);
 }
 
-TEST(Node, child_ReturnTheLastChild)
+TEST(node_class, child_ReturnTheLastChild)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node n = test_tree.root();
@@ -203,7 +203,7 @@ TEST(Node, child_ReturnTheLastChild)
 	EXPECT_EQ(n.child(index - 1), third_child);
 }
 
-TEST(Node, child_ReturnNullNodeIfNodeDoesNotHaveChildrenAndIndexIsZero)
+TEST(node_class, child_ReturnNullNodeIfNodeDoesNotHaveChildrenAndIndexIsZero)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node n = test_tree.root();
@@ -212,7 +212,7 @@ TEST(Node, child_ReturnNullNodeIfNodeDoesNotHaveChildrenAndIndexIsZero)
 	EXPECT_TRUE(n.child(index).is_null());
 }
 
-TEST(Node, child_ThrowOutOfRangeExceptionIfNodeDoesNotHaveChildrenAndIndexIsNotZero)
+TEST(node_class, child_ThrowOutOfRangeExceptionIfNodeDoesNotHaveChildrenAndIndexIsNotZero)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node n = test_tree.root();
@@ -226,7 +226,7 @@ TEST(Node, child_ThrowOutOfRangeExceptionIfNodeDoesNotHaveChildrenAndIndexIsNotZ
 	);
 }
 
-TEST(Node, child_ShouldReturnNullNodeIfTheSearchedNodeIsTheOneAfterTheLastChild)
+TEST(node_class, child_ShouldReturnNullNodeIfTheSearchedNodeIsTheOneAfterTheLastChild)
 {
 	general_tree<int> test_tree(1);
 	general_tree<int>::node n = test_tree.root();
