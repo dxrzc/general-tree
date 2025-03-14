@@ -142,7 +142,6 @@ public:
 		);
 	}
 
-	// TODO: test
 	template<typename ...Args>
 	node emplace_left_child(node destiny, Args&& ...args)
 	{
@@ -181,14 +180,12 @@ public:
 		return node(nullptr);
 	}
 
-	// TODO: test
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node insert_left_child(node destiny, U&& new_node_value)
 	{
 		return emplace_left_child(destiny, std::forward<U>(new_node_value));
 	}
 
-	// TODO: test
 	template<typename ...Args>
 	node emplace_right_sibling(node destiny, Args&& ...args)
 	{
@@ -233,7 +230,6 @@ public:
 		return node(nullptr);
 	}
 
-	// TODO: test
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node insert_right_sibling(node destiny, U&& new_node_value)
 	{
