@@ -7,6 +7,20 @@ TEST(node_class, defaultNodeIsNull)
 	EXPECT_TRUE(node.is_null());
 }
 
+// boolean operator
+
+TEST(node_class, booleanOperator_ReturnTrueIfNodeIsNotNull)
+{
+	general_tree<int> test_tree(1);
+	EXPECT_TRUE(test_tree.root());
+}
+
+TEST(node_class, booleanOperator_ReturnFalseIfNodeIsNull)
+{
+	general_tree<int>::node node;
+	EXPECT_FALSE(node);
+}
+
 // equality operator
 
 TEST(node_class, equalityOperator_ReturnTrueIfNodesAreTheSame)
