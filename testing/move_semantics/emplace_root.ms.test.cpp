@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
-#include "fixtures/move_semantics.fixture.h"
+#include "move_semantics.fixture.h"
 
 TEST_F(move_semantics_fixture, emplace_root)
 {
