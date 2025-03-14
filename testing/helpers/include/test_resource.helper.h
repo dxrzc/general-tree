@@ -20,6 +20,7 @@ public:
 		instances_created = 0;
 		copy_constructor_calls = 0;
 		move_constructor_calls = 0;
+		destructor_calls = 0;
 	}
 
 	test_resource() = delete;
