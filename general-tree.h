@@ -51,7 +51,7 @@ public:
 
 	public:
 		node(private_node* node = nullptr) noexcept
-			: m_node(node) {}	
+			: m_node(node) {}
 
 		bool operator==(const node& other) const noexcept
 		{
@@ -302,6 +302,20 @@ public:
 		}
 
 		return (n.m_node->m_left_child ? 1 + max_height : 0);
+	}
+
+	// TODO: test
+	std::size_t descendants_count(node n) const
+	{
+		if (n.m_node == nullptr)
+			throw std::invalid_argument("Cannot get descendants count of null node");
+
+		std::size_t total = 0;
+
+		for (n.m_node = n.m_node->m_left_child; n.m_node != nullptr; n.m_node = n.m_node->m_right_sibling)
+			total += descendants_count(n) + 1;
+
+		return total;
 	}
 
 	[[nodiscard]] node root() const noexcept
