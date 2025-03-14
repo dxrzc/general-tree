@@ -142,6 +142,11 @@ public:
 		);
 	}
 
+	~general_tree()
+	{
+		clear(m_root);
+	}
+
 	template<typename ...Args>
 	node emplace_left_child(node destiny, Args&& ...args)
 	{
@@ -316,6 +321,17 @@ public:
 			total += descendants_count(n) + 1;
 
 		return total;
+	}
+
+	// TODO: test
+	void clear(node n)
+	{
+		if (n.m_node != nullptr)
+		{
+			clear(n.m_node->m_left_child);
+			clear(n.m_node->m_right_sibling);
+			delete n.m_node;
+		}
 	}
 
 	[[nodiscard]] node root() const noexcept
