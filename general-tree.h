@@ -305,7 +305,7 @@ public:
 	}
 
 	// TODO: test
-	std::size_t descendants_count(node n) const
+	[[nodiscard]] std::size_t descendants_count(node n) const
 	{
 		if (n.m_node == nullptr)
 			throw std::invalid_argument("Cannot get descendants count of null node");
