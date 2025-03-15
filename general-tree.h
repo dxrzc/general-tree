@@ -132,7 +132,7 @@ public:
 		: m_root(nullptr) {}
 
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-	general_tree(U&& root_value): general_tree()
+	general_tree(U&& root_value) : general_tree()
 	{
 		m_root = new private_node(
 			nullptr,
@@ -140,6 +140,11 @@ public:
 			nullptr,
 			std::forward<U>(root_value)
 		);
+	}
+
+	~general_tree()
+	{
+		clear();
 	}
 
 	template<typename ...Args>
@@ -321,6 +326,29 @@ public:
 	[[nodiscard]] node root() const noexcept
 	{
 		return m_root;
+	}
+
+	void clear()
+	{
+		if (m_root == nullptr)
+			return;
+
+		std::queue<private_node*> queue;
+		queue.push(m_root);
+
+		private_node* current = nullptr;
+		while (!queue.empty())
+		{
+			current = queue.front();
+			queue.pop();
+
+			for (private_node* child = current->m_left_child; child != nullptr; child = child->m_right_sibling)
+				queue.push(child);
+
+			delete current;
+		}
+
+		m_root = nullptr;
 	}
 
 	bool empty() const noexcept
