@@ -18,6 +18,30 @@ TEST(emplace_right_sibling, returnNodePointingToRootOfTheInsertedTree)
 	EXPECT_EQ(destiny.right_sibling(), inserted);
 }
 
+TEST(emplace_right_sibling, parentOfTheNewNodeShouldBeTheParentOfTheDestinyNode)
+{
+	general_tree<int> tree(1);
+	general_tree<int>::node destiny = tree.insert_left_child(tree.root(), 2);
+	general_tree<int>::node inserted = tree.emplace_right_sibling(destiny, 3);
+	EXPECT_EQ(inserted.parent(), destiny.parent());
+}
+
+TEST(emplace_right_sibling, leftChildOfTheNewNodeShouldBeNull)
+{
+	general_tree<int> tree(1);
+	general_tree<int>::node destiny = tree.insert_left_child(tree.root(), 2);
+	general_tree<int>::node inserted = tree.emplace_right_sibling(destiny, 3);
+	EXPECT_TRUE(inserted.left_child().is_null());
+}
+
+TEST(emplace_right_sibling, ifThereWasNotAPreviousRightSiblingTheRightSiblingOfNewNodeShouldBeNull)
+{
+	general_tree<int> tree(1);
+	general_tree<int>::node destiny = tree.insert_left_child(tree.root(), 2);
+	general_tree<int>::node inserted = tree.emplace_right_sibling(destiny, 3);
+	EXPECT_TRUE(inserted.right_sibling().is_null());
+}
+
 TEST(emplace_right_sibling, previousRightSiblingShouldBeTheRightSiblingOfTheNewNode)
 {
 	general_tree<int> tree(1);

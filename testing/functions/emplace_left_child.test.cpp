@@ -17,6 +17,28 @@ TEST(emplace_left_child, returnNodePointingToRootOfTheInsertedTree)
 	EXPECT_EQ(inserted, tree.root().left_child());
 }
 
+TEST(emplace_left_child, parentOfTheInsertedNodeShouldBeTheNodePassedAsArgument)
+{
+	general_tree<int> tree(1);
+	general_tree<int>::node inserted = tree.emplace_left_child(tree.root(), 7842342);
+
+	EXPECT_EQ(inserted.parent(), tree.root());
+}
+
+TEST(emplace_left_child, leftChildOfTheInsertedNodeShouldBeNull)
+{
+	general_tree<int> tree(1);
+	general_tree<int>::node inserted = tree.emplace_left_child(tree.root(), 7842342);
+	EXPECT_TRUE(inserted.left_child().is_null());
+}
+
+TEST(emplace_left_child, ifThereWasNotAPreviousLeftChildRightSiblingOfNewNodeShouldBeNull)
+{
+	general_tree<int> tree(1);
+	general_tree<int>::node inserted = tree.emplace_left_child(tree.root(), 7842342);
+	EXPECT_TRUE(inserted.right_sibling().is_null());
+}
+
 TEST(emplace_left_child, previousLeftChildShouldBeTheRightSiblingOfTheNewNode)
 {
 	general_tree<int> tree(1);
