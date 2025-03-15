@@ -13,6 +13,14 @@ TEST(clear, noFatalFailureIfItsCalledBeforeDestructor)
 	});
 }
 
+TEST(clear, rootNullAfterClear)
+{
+	general_tree<int> tree;
+	tree.create_root(1);
+	tree.clear();
+	EXPECT_TRUE(tree.root().is_null());
+}
+
 TEST(clear, callOnEmptyTreeDoesNotModifyTheNullRoot)
 {
 	general_tree<int> tree;
