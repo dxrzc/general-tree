@@ -22,3 +22,14 @@ TEST(create_root, returnANodePointingToRoot)
 
 	EXPECT_EQ(result, test_tree.root());
 }
+
+TEST(create_root, rootParentRightSiblingAndLeftChildShouldBeNull)
+{
+	general_tree<int> tree;
+	tree.create_root(1);
+
+	general_tree<int>::node root = tree.root();
+	EXPECT_TRUE(root.parent().is_null());
+	EXPECT_TRUE(root.right_sibling().is_null());
+	EXPECT_TRUE(root.left_child().is_null());
+}
