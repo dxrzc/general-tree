@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <queue>
+#include <vector>
 #include <stdexcept>
 #include <optional>
 
@@ -72,7 +73,7 @@ private:
 				// if it is the first copied child, it goes as left child
 				if (prev_copied_child == nullptr)
 					copied_node->m_left_child = child_copy;
-				else					
+				else
 					prev_copied_child->m_right_sibling = child_copy;
 
 				org_copy_relation_queue.push({ child_original, child_copy });
@@ -403,5 +404,29 @@ public:
 	bool empty() const noexcept
 	{
 		return m_root == nullptr;
+	}
+
+	std::vector<T> to_vector() const
+	{
+		std::vector<T> vector;
+
+		if (m_root != nullptr)
+		{
+			std::queue<private_node*> queue;
+			queue.push(m_root);
+
+			while (!queue.empty())
+			{
+				private_node* current = queue.front();
+				vector.push_back(current->data);
+
+				queue.pop();
+
+				for (private_node* child = current->m_left_child; child != nullptr; child = child->m_right_sibling)
+					queue.push(child);
+			}			
+		}
+
+		return vector;		
 	}
 };
