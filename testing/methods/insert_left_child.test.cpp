@@ -86,17 +86,17 @@ TEST(insert_left_child, nodesInsertedShouldIncreaseTheHeightCount)
 {
 	general_tree<int> tree(1);
 	tree.insert_left_child(tree.root(), 2);
-	std::size_t tree_previous_height = tree.height(tree.root());
+	std::size_t tree_previous_height = tree.root().height();
 
 	// create a new tree and populate it
 	general_tree<int> new_tree(3);
 	new_tree.insert_left_child(new_tree.root(), 4);
 	new_tree.insert_left_child(new_tree.root().left_child(), 5);
 	new_tree.insert_left_child(new_tree.root().left_child().left_child(), 6);
-	std::size_t new_tree_height = tree.height(new_tree.root());
+	std::size_t new_tree_height = new_tree.root().height();
 
 	tree.insert_left_child(tree.root(), new_tree);
-	std::size_t tree_updated_height = tree.height(tree.root());
+	std::size_t tree_updated_height = tree.root().height();
 
 	EXPECT_EQ(tree_updated_height, tree_previous_height + new_tree_height);
 }
@@ -120,6 +120,6 @@ TEST(insert_left_child, multipleInsertionsDoNotCauseErrors)
 			tree.insert_left_child(tree.root(), new_tree);
 		}
 
-		EXPECT_EQ(tree.children_count(tree.root()), count);
+		EXPECT_EQ(tree.root().children_count(), count);
 	});
 }

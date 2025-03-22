@@ -30,7 +30,7 @@ TEST(class_node, child_ReturnTheLastChild)
 	auto second_child = test_tree.insert_right_sibling(first_child, 3);
 	auto third_child = test_tree.insert_right_sibling(second_child, 4);
 
-	const std::size_t index = test_tree.children_count(test_tree.root());
+	const std::size_t index = test_tree.root().children_count();
 
 	EXPECT_EQ(n.child(index - 1), third_child);
 }

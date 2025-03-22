@@ -118,14 +118,14 @@ TEST(insert_right_sibling, increaseTheParentsChildCount)
 {
 	general_tree<int> tree(100);
 	general_tree<int>::node destiny_node = tree.insert_left_child(tree.root(), 200);
-	std::size_t tree_child_count = tree.children_count(tree.root());
+	std::size_t tree_child_count = tree.root().children_count();
 
 	// inserting a new tree as right sibling
 	general_tree<int> new_tree(1313);
 	tree.insert_right_sibling(destiny_node, new_tree);
 
 	// parent's child count should have increased
-	EXPECT_EQ(tree.children_count(tree.root()), tree_child_count + 1);
+	EXPECT_EQ(tree.root().children_count(), tree_child_count + 1);
 }
 
 TEST(insert_right_sibling, multipleInsertionsDoNotCauseErrors)
@@ -142,6 +142,6 @@ TEST(insert_right_sibling, multipleInsertionsDoNotCauseErrors)
 			tree.insert_right_sibling(destiny_node, new_tree);
 		}
 
-		EXPECT_EQ(tree.children_count(tree.root()), children_count + 1);
+		EXPECT_EQ(tree.root().children_count(), children_count + 1);
 	});
 }

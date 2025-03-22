@@ -59,6 +59,6 @@ TEST(emplace_left_child, multipleInsertionsDoNotCauseErrors)
 		for (unsigned i = 0; i < count; i++)		
 			tree.emplace_left_child(tree.root(), i);		
 
-		EXPECT_EQ(tree.children_count(tree.root()), count);
+		EXPECT_EQ(tree.root().children_count(), count);
 	});
 }

@@ -62,6 +62,6 @@ TEST(emplace_right_sibling, multipleInsertionsDoNotCauseErrors)
 		const unsigned count = 10;
 		for (unsigned i = 0; i < count; i++)
 			tree.emplace_right_sibling(destiny, i);
-		EXPECT_EQ(tree.children_count(tree.root()), count + 1);
+		EXPECT_EQ(tree.root().children_count(), count + 1);
 	});
 }
