@@ -146,6 +146,52 @@ public:
 			return child;
 		}
 
+		[[nodiscard]] std::size_t children_count() const
+		{
+			if (m_node == nullptr)
+				throw std::invalid_argument("Cannot count children of null node");
+
+			std::size_t count = 0;
+			for (const private_node* child = m_node->m_left_child; child != nullptr; child = child->m_right_sibling)
+				++count;
+
+			return count;
+		}
+
+		[[nodiscard]] std::size_t height() const
+		{
+			if (m_node == nullptr)
+				throw std::invalid_argument("Cannot get height of null node");
+
+			std::size_t max_height = 0;
+			for (private_node* child = m_node->m_left_child; child != nullptr; child = child->m_right_sibling)
+			{
+				if (child != nullptr)
+				{
+					std::size_t child_height = node(child).height();
+					if (child_height > max_height)
+						max_height = child_height;
+				}
+			}
+
+			return (m_node->m_left_child ? 1 + max_height : 0);
+		}
+
+		[[nodiscard]] std::size_t descendants_count() const
+		{
+			private_node* n = m_node;
+
+			if (m_node == nullptr)
+				throw std::invalid_argument("Cannot get descendants count of null node");
+
+			std::size_t total = 0;
+
+			for (n = m_node->m_left_child; n != nullptr; n = m_node->m_right_sibling)
+				total += node(n).descendants_count() + 1;
+
+			return total;
+		}
+
 		bool is_root() const noexcept
 		{
 			return m_node->m_parent == nullptr;
@@ -328,50 +374,6 @@ public:
 		return emplace_root(std::forward<U>(data));
 	}
 
-	[[nodiscard]] std::size_t children_count(node n) const
-	{
-		if (n.m_node == nullptr)
-			throw std::invalid_argument("Cannot count children of null node");
-
-		std::size_t count = 0;
-		for (auto child = n.left_child(); !child.is_null(); child = child.right_sibling())
-			++count;
-		return count;
-	}
-
-	[[nodiscard]] std::size_t height(node n) const
-	{
-		if (n.m_node == nullptr)
-			throw std::invalid_argument("Cannot get height of null node");
-
-		std::size_t max_height = 0;
-		for (private_node* ptr = n.m_node->m_left_child; ptr != nullptr; ptr = ptr->m_right_sibling)
-		{
-			if (ptr != nullptr)
-			{
-				std::size_t child_height = height(ptr);
-				if (child_height > max_height)
-					max_height = child_height;
-			}
-		}
-
-		return (n.m_node->m_left_child ? 1 + max_height : 0);
-	}
-
-	// TODO: test
-	[[nodiscard]] std::size_t descendants_count(node n) const
-	{
-		if (n.m_node == nullptr)
-			throw std::invalid_argument("Cannot get descendants count of null node");
-
-		std::size_t total = 0;
-
-		for (n.m_node = n.m_node->m_left_child; n.m_node != nullptr; n.m_node = n.m_node->m_right_sibling)
-			total += descendants_count(n) + 1;
-
-		return total;
-	}
-
 	[[nodiscard]] node root() const noexcept
 	{
 		return m_root;
@@ -424,9 +426,9 @@ public:
 
 				for (private_node* child = current->m_left_child; child != nullptr; child = child->m_right_sibling)
 					queue.push(child);
-			}			
+			}
 		}
 
-		return vector;		
+		return vector;
 	}
 };
