@@ -15,7 +15,7 @@ public:
 private:
 	struct private_node
 	{
-		T data;
+		T m_data;
 		private_node* m_parent;
 		private_node* m_left_child;
 		private_node* m_right_sibling;
@@ -29,14 +29,14 @@ private:
 		) : m_parent(parent),
 			m_left_child(left_child),
 			m_right_sibling(right_sibling),
-			data(std::forward<Args>(args)...) {}
+			m_data(std::forward<Args>(args)...) {}
 
 		private_node(
 			const T& data,
 			private_node* parent = nullptr,
 			private_node* right_sibling = nullptr,
 			private_node* left_child = nullptr
-		) : data(data),
+		) : m_data(data),
 			m_parent(parent),
 			m_left_child(left_child),
 			m_right_sibling(right_sibling) {}
@@ -49,7 +49,7 @@ private:
 		if (n.m_node == nullptr)
 			return;
 
-		private_node* copy_root = new private_node(n.m_node->data);
+		private_node* copy_root = new private_node(n.m_node->m_data);
 		m_root = copy_root;
 
 		// keeps track of nodes whose children still need to be copied
@@ -68,7 +68,7 @@ private:
 			// children copy algorithm
 			while (child_original != nullptr)
 			{
-				private_node* child_copy = new private_node(child_original->data);
+				private_node* child_copy = new private_node(child_original->m_data);
 
 				// if it is the first copied child, it goes as left child
 				if (prev_copied_child == nullptr)
@@ -341,7 +341,7 @@ public:
 		if (node.m_node == nullptr)
 			throw std::invalid_argument("Cannot get data from null node");
 
-		return node.m_node->data;
+		return node.m_node->m_data;
 	}
 
 	[[nodiscard]] T& data(node node)
@@ -349,7 +349,7 @@ public:
 		if (node.m_node == nullptr)
 			throw std::invalid_argument("Cannot get data from null node");
 
-		return node.m_node->data;
+		return node.m_node->m_data;
 	}
 
 	template<typename ...Args>
@@ -420,7 +420,7 @@ public:
 			while (!queue.empty())
 			{
 				private_node* current = queue.front();
-				vector.push_back(current->data);
+				vector.push_back(current->m_data);
 
 				queue.pop();
 
