@@ -91,7 +91,6 @@ public:
 		friend class general_tree;
 
 	private:
-		// TODO: const pointer
 		private_node* m_node;
 
 	public:
@@ -108,21 +107,39 @@ public:
 			return m_node != nullptr;
 		}
 
+		/**
+		 * @brief Retrieves the left child of the current node.
+		 * @return The left child node, or a null node if the current node has no left child.
+		 */
 		[[nodiscard]] node left_child() const noexcept
 		{
 			return m_node->m_left_child;
 		}
 
+		/**
+		 * @brief Retrieves the parent of the current node.
+		 * @return The parent node, or a null node if the current node has no parent.
+		 */
 		[[nodiscard]] node parent() const noexcept
 		{
 			return m_node->m_parent;
 		}
 
+		/**
+		 * @brief Retrieves the right sibling of the current node.
+		 * @return The right sibling node, or a null node if the current node has no right sibling.
+		 */
 		[[nodiscard]] node right_sibling() const noexcept
 		{
 			return m_node->m_right_sibling;
 		}
 
+		/**
+		 * @brief Retrieves the child node at the specified index.
+		 * @param index The zero-based index of the child to retrieve.
+		 * @return The child node at the specified index, or a null node if the index is out of range.
+		 * @throws std::invalid_argument If the current node is null.
+		 */
 		[[nodiscard]] node child(std::size_t index) const
 		{
 			if (m_node == nullptr)
@@ -140,6 +157,11 @@ public:
 			return child;
 		}
 
+		/**
+		 * @brief Counts the number of children of the current node.
+		 * @return The total number of children of the current node.
+		 * @throws std::invalid_argument If the current node is null.
+		 */
 		[[nodiscard]] std::size_t children_count() const
 		{
 			if (m_node == nullptr)
@@ -152,23 +174,50 @@ public:
 			return count;
 		}
 
+		/**
+		 * @brief Computes the height of the current node in the tree.		 
+		 * @return The height of the current node's subtree.		 
+		 * @throws std::invalid_argument If the current node is null.
+		 */
 		[[nodiscard]] std::size_t height() const
 		{
+			// Breadth First Search Algorithm
+
 			if (m_node == nullptr)
 				throw std::invalid_argument("Cannot get height of null node");
 
-			std::size_t max_height = 0;
-			for (private_node* child = m_node->m_left_child; child != nullptr; child = child->m_right_sibling)
+			std::queue<private_node*> q;
+			q.push(m_node);
+
+			std::size_t height = 0;
+			while (!q.empty())
 			{
-				if (child != nullptr)
+				std::size_t current_level_size = q.size();
+
+				// Process every node of the current level
+				for (std::size_t i = 0; i < current_level_size; ++i)
 				{
-					std::size_t child_height = node(child).height();
-					if (child_height > max_height)
-						max_height = child_height;
+					private_node* current_node = q.front();
+					q.pop();
+
+					// Add children of the current node to the queue
+					private_node* current_node_left_child = current_node->m_left_child;
+					if (current_node_left_child != nullptr)
+					{
+						q.push(current_node_left_child);
+						private_node* right_sibling = current_node_left_child->m_right_sibling;
+						while (right_sibling != nullptr)
+						{
+							q.push(right_sibling);
+							right_sibling = right_sibling->m_right_sibling;
+						}
+					}
 				}
+
+				++height;
 			}
 
-			return (m_node->m_left_child ? 1 + max_height : 0);
+			return height - 1;
 		}
 
 		/*[[nodiscard]] std::size_t descendants_count() const
@@ -178,7 +227,7 @@ public:
 			if (m_node == nullptr)
 				throw std::invalid_argument("Cannot get descendants count of null node");
 
-			std::size_t total = 0;			
+			std::size_t total = 0;
 
 			for (n = m_node->m_left_child; n != nullptr; n = m_node->m_right_sibling)
 				total += node(n).descendants_count() + 1;
@@ -186,26 +235,46 @@ public:
 			return total;
 		}*/
 
+		/*
+		 * @brief Checks if the node is the root of the tree.
+		 * @return true if the node is the root, false otherwise.
+		 */
 		bool is_root() const noexcept
 		{
 			return m_node->m_parent == nullptr;
 		}
 
+		/**
+		 * @brief Checks if the node is a leaf in the tree.
+		 * @return true if the node is a leaf, false otherwise.
+		 */
 		bool is_leaf() const noexcept
 		{
 			return m_node->m_left_child == nullptr;
 		}
 
+		/**
+		 * @brief Checks if the node has a right sibling.
+		 * @return true if the node has a right sibling, false otherwise.
+		 */
 		bool has_right_sibling() const noexcept
 		{
 			return m_node->m_right_sibling != nullptr;
 		}
 
+		/**
+		 * @brief Checks if the node has a left child.
+		 * @return true if the node has a left child, false otherwise.
+		 */
 		bool has_left_child() const noexcept
 		{
 			return m_node->m_left_child != nullptr;
 		}
 
+		/**
+		* @brief Checks if the node is null.
+		* @return true if the node is null, false otherwise.
+		*/
 		bool is_null() const noexcept
 		{
 			return m_node == nullptr;
