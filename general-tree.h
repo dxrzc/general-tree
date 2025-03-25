@@ -407,28 +407,4 @@ public:
 	{
 		return m_root == nullptr;
 	}
-
-	std::vector<T> to_vector() const
-	{
-		std::vector<T> vector;
-
-		if (m_root != nullptr)
-		{
-			std::queue<private_node*> queue;
-			queue.push(m_root);
-
-			while (!queue.empty())
-			{
-				private_node* current = queue.front();
-				vector.push_back(current->m_data);
-
-				queue.pop();
-
-				for (private_node* child = current->m_left_child; child != nullptr; child = child->m_right_sibling)
-					queue.push(child);
-			}
-		}
-
-		return vector;
-	}
 };
