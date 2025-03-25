@@ -91,6 +91,7 @@ public:
 		friend class general_tree;
 
 	private:
+		// TODO: const pointer
 		private_node* m_node;
 
 	public:
@@ -170,20 +171,20 @@ public:
 			return (m_node->m_left_child ? 1 + max_height : 0);
 		}
 
-		[[nodiscard]] std::size_t descendants_count() const
+		/*[[nodiscard]] std::size_t descendants_count() const
 		{
 			private_node* n = m_node;
 
 			if (m_node == nullptr)
 				throw std::invalid_argument("Cannot get descendants count of null node");
 
-			std::size_t total = 0;
+			std::size_t total = 0;			
 
 			for (n = m_node->m_left_child; n != nullptr; n = m_node->m_right_sibling)
 				total += node(n).descendants_count() + 1;
 
 			return total;
-		}
+		}*/
 
 		bool is_root() const noexcept
 		{
