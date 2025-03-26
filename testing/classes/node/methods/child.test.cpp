@@ -1,73 +1,40 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(class_node, child_NodeIsNullptr)
+TEST(class_node, child_ThrowInvalidArgumentIfNodeIsNull)
 {
-	general_tree<int>::node node;
-	EXPECT_THROW({
-		// block to avoid the warning caused by nodiscard
-		auto n = node.child(0);
-		},
-		std::invalid_argument
-	);
+	general_tree<int>::node n = nullptr;
+	EXPECT_THROW({ auto ignored = n.child(10); }, std::invalid_argument);
 }
 
-TEST(class_node, child_IndexZeroReturnsTheFirstChild)
+TEST(class_node, child_ReturnNullIfChildIsOutOfRange)
 {
-	general_tree<int> test_tree(1);
-	auto first_child = test_tree.insert_left_child(test_tree.root(), 2);
-	test_tree.insert_right_sibling(first_child, 3);
+	general_tree<int> tree(0);
+	tree.insert_left_child(tree.root(), 1);
+	tree.insert_left_child(tree.root(), 2);
+	tree.insert_left_child(tree.root(), 3);
 
-	EXPECT_EQ(test_tree.root().child(0), first_child);
+	general_tree<int>::node n = tree.root();
+
+	EXPECT_EQ(n.child(3), nullptr);
 }
 
-TEST(class_node, child_ReturnTheLastChild)
+TEST(class_node, child_ReturnTheExpectedChild)
 {
-	general_tree<int> test_tree(1);
-	general_tree<int>::node n = test_tree.root();
+	general_tree<int> tree(0);
+	tree.insert_left_child(tree.root(), 1);
+	auto expected_child = tree.insert_left_child(tree.root(), 2);
+	tree.insert_left_child(tree.root(), 3);
 
-	auto first_child = test_tree.insert_left_child(test_tree.root(), 2);
-	auto second_child = test_tree.insert_right_sibling(first_child, 3);
-	auto third_child = test_tree.insert_right_sibling(second_child, 4);
+	general_tree<int>::node n = tree.root();
 
-	const std::size_t index = test_tree.root().children_count();
-
-	EXPECT_EQ(n.child(index - 1), third_child);
+	EXPECT_EQ(n.child(1), expected_child);
 }
 
-TEST(class_node, child_ReturnNullNodeIfNodeDoesNotHaveChildrenAndIndexIsZero)
+TEST(class_node, child_ReturnNullIfNodeDoesNotHaveChildren)
 {
-	general_tree<int> test_tree(1);
-	general_tree<int>::node n = test_tree.root();
-	const std::size_t index = 0;
+	general_tree<int> tree(0);
+	general_tree<int>::node n = tree.root();
 
-	EXPECT_TRUE(n.child(index).is_null());
-}
-
-TEST(class_node, child_ThrowOutOfRangeExceptionIfNodeDoesNotHaveChildrenAndIndexIsNotZero)
-{
-	general_tree<int> test_tree(1);
-	general_tree<int>::node n = test_tree.root();
-	const std::size_t index = 1;
-
-	EXPECT_THROW({
-		// block to avoid the warning caused by nodiscard
-		auto x = n.child(index);
-		},
-		std::out_of_range
-	);
-}
-
-TEST(class_node, child_ShouldReturnNullNodeIfTheSearchedNodeIsTheOneAfterTheLastChild)
-{
-	general_tree<int> test_tree(1);
-	general_tree<int>::node n = test_tree.root();
-
-	auto first_child = test_tree.insert_left_child(test_tree.root(), 2); // 0
-	auto second_child = test_tree.insert_right_sibling(first_child, 3); // 1
-	auto third_child = test_tree.insert_right_sibling(second_child, 4); // 2
-
-	const std::size_t index = 3;
-
-	EXPECT_TRUE(n.child(index).is_null());
+	EXPECT_EQ(n.child(1), nullptr);
 }
