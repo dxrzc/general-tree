@@ -2,7 +2,6 @@
 
 #include <utility>
 #include <queue>
-#include <vector>
 #include <stdexcept>
 #include <optional>
 
