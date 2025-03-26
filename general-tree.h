@@ -175,13 +175,13 @@ public:
 		}
 
 		/**
-		 * @brief Computes the height of the current node in the tree.		 
-		 * @return The height of the current node's subtree.		 
+		 * @brief Computes the height of the current node in the tree.
+		 * @return The height of the current node's subtree.
 		 * @throws std::invalid_argument If the current node is null.
 		 */
 		[[nodiscard]] std::size_t height() const
 		{
-			// Breadth First Search Algorithm
+			// Breadth First Algorithm
 
 			if (m_node == nullptr)
 				throw std::invalid_argument("Cannot get height of null node");
@@ -220,20 +220,34 @@ public:
 			return height - 1;
 		}
 
-		/*[[nodiscard]] std::size_t descendants_count() const
+		/**
+		 * @brief Computes the total number of descendants of the current node.		 
+		 * @return The total number of descendants of the current node.
+		 * @throws std::invalid_argument If the current node is null.
+		 */
+		[[nodiscard]] std::size_t descendants_count() const
 		{
-			private_node* n = m_node;
-
 			if (m_node == nullptr)
-				throw std::invalid_argument("Cannot get descendants count of null node");
+				throw std::invalid_argument("Cannot get height of null node");
 
-			std::size_t total = 0;
+			std::size_t count = 0;
+			std::queue<private_node*> q;
+			q.push(m_node);
 
-			for (n = m_node->m_left_child; n != nullptr; n = m_node->m_right_sibling)
-				total += node(n).descendants_count() + 1;
+			while (!q.empty())
+			{
+				private_node* current_node = q.front();
+				q.pop();
 
-			return total;
-		}*/
+				for (private_node* left_child = current_node->m_left_child; left_child != nullptr; left_child = left_child->m_right_sibling)
+				{
+					q.push(left_child);
+					++count;
+				}
+			}
+
+			return count;
+		}
 
 		/*
 		 * @brief Checks if the node is the root of the tree.
