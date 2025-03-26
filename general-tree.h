@@ -285,9 +285,9 @@ public:
 		}
 
 		/**
-		* @brief Checks if the node is null.
-		* @return true if the node is null, false otherwise.
-		*/
+		 * @brief Checks if the node is null.
+		 * @return true if the node is null, false otherwise.
+		 */
 		bool is_null() const noexcept
 		{
 			return m_node == nullptr;
@@ -318,6 +318,14 @@ public:
 		clear();
 	}
 
+	/**
+	 * @brief Creates and emplaces a new left child node for the given destination node.
+	 * @tparam Args Variadic template parameters for the new node constructor.
+	 * @param destiny The node to which the new left child will be attached.
+	 * @param args Arguments to forward to the new node's constructor.
+	 * @return node A handle to the newly created left child node.	 
+	 * @throws std::invalid_argument If the destination node is null.
+	 */
 	template<typename ...Args>
 	node emplace_left_child(node destiny, Args&& ...args)
 	{
@@ -336,6 +344,13 @@ public:
 		return new_node;
 	}
 
+	/**
+	 * @brief Inserts an entire subtree as the left child of the given destination node.
+	 * @param destiny The node to which the tree will be inserted as a left child.
+	 * @param tree The tree to insert as a left child. After insertion, this tree will be empty.
+	 * @return node A handle to the newly inserted left child node, or a null node if the tree is empty.
+	 * @throws std::invalid_argument If the destination node is null or if attempting to insert the tree as a child of its own root.
+	 */
 	node insert_left_child(node destiny, general_tree<T>& tree)
 	{
 		if (!destiny.m_node)
@@ -356,12 +371,27 @@ public:
 		return node(nullptr);
 	}
 
+	/**
+	 * @brief Inserts a new left child node for the given destination node, with the provided value.	 
+	 * @param destiny The node to which the left child will be inserted.
+	 * @param new_node_value The value to store in the newly created left child node.
+	 * @return node A handle to the newly created left child node.	 
+	 * @throws std::invalid_argument If the destination node is null.
+	 */
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node insert_left_child(node destiny, U&& new_node_value)
 	{
 		return emplace_left_child(destiny, std::forward<U>(new_node_value));
 	}
 
+	/**
+	 * @brief Creates and emplaces a new right sibling for the given destination node.	 
+	 * @tparam Args Variadic template parameters for the new node constructor.
+	 * @param destiny The node to which the new right sibling will be attached.
+	 * @param args Arguments to forward to the new node's constructor.
+	 * @return node A handle to the newly created right sibling node.	 
+	 * @throws std::invalid_argument If the destination node is null or is the root (cannot have a sibling).
+	 */
 	template<typename ...Args>
 	node emplace_right_sibling(node destiny, Args&& ...args)
 	{
@@ -383,6 +413,14 @@ public:
 		return new_node;
 	}
 
+	/**
+	 * @brief Inserts an entire subtree as the right sibling of the given destination node.	 
+	 * @param destiny The node to which the tree will be inserted as a right sibling.
+	 * @param tree The tree to insert as a right sibling. After insertion, this tree will be empty.
+	 * @return node A handle to the newly inserted right sibling node, or a null node if the tree is empty.	 
+	 * @throws std::invalid_argument If the destination node is null, is the root (cannot have siblings),
+	 *                               or if attempting to insert the tree as its own sibling.
+	 */
 	node insert_right_sibling(node destiny, general_tree<T>& tree)
 	{
 		if (destiny.m_node == nullptr)
@@ -406,6 +444,13 @@ public:
 		return node(nullptr);
 	}
 
+	/**
+	 * @brief Inserts a new right sibling node for the given destination node, with the provided value.	 
+	 * @param destiny The node to which the right sibling will be inserted.
+	 * @param new_node_value The value to store in the newly created right sibling node.
+	 * @return node A handle to the newly created right sibling node.	 
+	 * @throws std::invalid_argument If the destination node is null or is the root (cannot have a sibling).
+	 */
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node insert_right_sibling(node destiny, U&& new_node_value)
 	{
@@ -420,6 +465,12 @@ public:
 		return node.m_node->m_data;
 	}
 
+	/**
+	 * @brief Accesses the data stored in the given node.	 
+	 * @param node The node from which to retrieve the data.
+	 * @return T& Reference to the data stored in the node.
+	 * @throws std::invalid_argument If the given node is null.
+	 */
 	[[nodiscard]] T& data(node node)
 	{
 		if (node.m_node == nullptr)
@@ -428,6 +479,13 @@ public:
 		return node.m_node->m_data;
 	}
 
+	/**
+	 * @brief Creates and emplaces the root node of the tree with the given arguments.
+	 * @tparam Args Variadic template parameters representing the types of arguments to be forwarded to the root node constructor.
+	 * @param args Arguments to forward to the root node constructor.
+	 * @return node A handle to the newly created root node.	 
+	 * @throws std::runtime_error If a root node already exists.
+	 */
 	template<typename ...Args>
 	node emplace_root(Args&& ...args)
 	{
@@ -444,17 +502,29 @@ public:
 		return m_root;
 	}
 
+	/**
+	 * @brief Creates the root node of the tree 
+	 * @param data The value to store in the root node.
+	 * @return node A handle to the newly created root node.
+	 * @throws std::runtime_error If a root node already exists.
+	 */	
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node create_root(U&& data)
 	{
 		return emplace_root(std::forward<U>(data));
 	}
 
+	/**
+	 * @brief Retrieves the root node of the tree.	 
+	 */
 	[[nodiscard]] node root() const noexcept
 	{
 		return m_root;
 	}
 
+	/**
+	 * @brief Clears all nodes from the tree.	 
+	 */
 	void clear()
 	{
 		if (m_root == nullptr)
@@ -479,6 +549,10 @@ public:
 		m_root = nullptr;
 	}
 
+
+	/**
+	 * @brief Checks whether the tree is empty.	 	 
+	 */
 	bool empty() const noexcept
 	{
 		return m_root == nullptr;
