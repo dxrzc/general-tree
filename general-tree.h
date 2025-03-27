@@ -186,7 +186,7 @@ public:
 		iterator operator++(int)
 		{
 			auto aux = *this;
-			m_pimpl->advance();
+			m_pimpl->advance(this->m_itype);
 			return aux;
 		}
 
