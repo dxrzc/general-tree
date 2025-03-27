@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <queue>
+#include <stack>
 #include <stdexcept>
 #include <optional>
 
@@ -10,6 +11,12 @@ class general_tree
 {
 public:
 	class node;
+
+	enum class iteration_type
+	{
+		preorder,
+		postorder,		
+	};
 
 private:
 	struct private_node
@@ -83,7 +90,147 @@ private:
 		}
 	}
 
+	// pimpl technique
+	class iterator_impl
+	{
+	private:
+		private_node* m_pnode;
+
+	public:
+		iterator_impl(private_node* pnode) : m_pnode(pnode) {}
+
+		void advance(iteration_type ttype)
+		{
+			switch (ttype)
+			{
+				case iteration_type::preorder:
+				{					
+					if (m_pnode->m_left_child != nullptr)
+					{
+						m_pnode = m_pnode->m_left_child;
+					}
+					else if (m_pnode->m_right_sibling != nullptr)
+					{
+						m_pnode = m_pnode->m_right_sibling;
+					}
+					// go up until it finds a right sibling
+					else
+					{
+						m_pnode = m_pnode->m_parent;
+				
+						while (m_pnode != nullptr && m_pnode->m_right_sibling == nullptr)
+							m_pnode = m_pnode->m_parent;
+				
+						if (m_pnode != nullptr)
+							m_pnode = m_pnode->m_right_sibling;
+					}
+
+					break;
+				}
+				
+				case iteration_type::postorder:
+				{
+					if (m_pnode->m_right_sibling != nullptr)
+					{
+						m_pnode = m_pnode->m_right_sibling;
+						while (m_pnode->m_left_child != nullptr)
+							m_pnode = m_pnode->m_left_child;
+					}
+					else
+						m_pnode = m_pnode->m_parent;
+					break;
+				}
+			}
+		}
+
+		T& get_value()
+		{
+			return m_pnode->m_data;
+		}
+
+		private_node* internal_node() const noexcept
+		{
+			return m_pnode;
+		}
+	};
+
 public:
+
+	class iterator
+	{
+	private:
+		iterator_impl* m_pimpl;
+		iteration_type m_itype;
+
+	public:
+		iterator(private_node* pnode = nullptr, iteration_type itype = iteration_type::preorder)
+			: m_pimpl(new iterator_impl(pnode)), m_itype(itype) {}
+
+		iterator(const iterator& other)
+			: m_itype(other.m_itype), m_pimpl(new iterator_impl(*other.m_pimpl)) {}
+
+		~iterator() { delete m_pimpl; }
+
+		using iterator_category = std::forward_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = T*;
+		using reference = T&;
+
+		iterator& operator++()
+		{
+			m_pimpl->advance(this->m_itype);
+			return *this;
+		}
+
+		iterator operator++(int)
+		{
+			auto aux = *this;
+			m_pimpl->advance();
+			return aux;
+		}
+
+		T& operator*()
+		{
+			return m_pimpl->get_value();
+		}
+
+		bool operator==(const iterator& other) const noexcept
+		{
+			return m_pimpl->internal_node() == other.m_pimpl->internal_node();
+		}
+	};
+
+	/**
+	 * @brief Returns an iterator to the beginning of the tree traversal.
+	 * @param itype The traversal order to use (default is preorder).
+	 * @return An iterator positioned at the first node in the specified traversal order.
+	 */
+	iterator begin(iteration_type itype = iteration_type::preorder)
+	{
+		switch (itype)
+		{
+			case iteration_type::preorder:
+				return iterator(m_root, itype);
+			case iteration_type::postorder: 
+			{				
+				private_node* current = m_root;
+				while (current->m_left_child != nullptr)
+					current = current->m_left_child;
+				return iterator(current, itype);
+				break;
+			}	
+		}		
+	}
+
+	/**
+	 * @brief Returns an iterator representing the end of the traversal.
+	 */
+	iterator end()
+	{
+		return iterator(nullptr);
+	}
+
 	// public node interface
 	class node
 	{
@@ -220,7 +367,7 @@ public:
 		}
 
 		/**
-		 * @brief Computes the total number of descendants of the current node.		 
+		 * @brief Computes the total number of descendants of the current node.
 		 * @return The total number of descendants of the current node.
 		 * @throws std::invalid_argument If the current node is null.
 		 */
@@ -323,7 +470,7 @@ public:
 	 * @tparam Args Variadic template parameters for the new node constructor.
 	 * @param destiny The node to which the new left child will be attached.
 	 * @param args Arguments to forward to the new node's constructor.
-	 * @return node A handle to the newly created left child node.	 
+	 * @return node A handle to the newly created left child node.
 	 * @throws std::invalid_argument If the destination node is null.
 	 */
 	template<typename ...Args>
@@ -372,10 +519,10 @@ public:
 	}
 
 	/**
-	 * @brief Inserts a new left child node for the given destination node, with the provided value.	 
+	 * @brief Inserts a new left child node for the given destination node, with the provided value.
 	 * @param destiny The node to which the left child will be inserted.
 	 * @param new_node_value The value to store in the newly created left child node.
-	 * @return node A handle to the newly created left child node.	 
+	 * @return node A handle to the newly created left child node.
 	 * @throws std::invalid_argument If the destination node is null.
 	 */
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
@@ -385,11 +532,11 @@ public:
 	}
 
 	/**
-	 * @brief Creates and emplaces a new right sibling for the given destination node.	 
+	 * @brief Creates and emplaces a new right sibling for the given destination node.
 	 * @tparam Args Variadic template parameters for the new node constructor.
 	 * @param destiny The node to which the new right sibling will be attached.
 	 * @param args Arguments to forward to the new node's constructor.
-	 * @return node A handle to the newly created right sibling node.	 
+	 * @return node A handle to the newly created right sibling node.
 	 * @throws std::invalid_argument If the destination node is null or is the root (cannot have a sibling).
 	 */
 	template<typename ...Args>
@@ -414,10 +561,10 @@ public:
 	}
 
 	/**
-	 * @brief Inserts an entire subtree as the right sibling of the given destination node.	 
+	 * @brief Inserts an entire subtree as the right sibling of the given destination node.
 	 * @param destiny The node to which the tree will be inserted as a right sibling.
 	 * @param tree The tree to insert as a right sibling. After insertion, this tree will be empty.
-	 * @return node A handle to the newly inserted right sibling node, or a null node if the tree is empty.	 
+	 * @return node A handle to the newly inserted right sibling node, or a null node if the tree is empty.
 	 * @throws std::invalid_argument If the destination node is null, is the root (cannot have siblings),
 	 *                               or if attempting to insert the tree as its own sibling.
 	 */
@@ -445,10 +592,10 @@ public:
 	}
 
 	/**
-	 * @brief Inserts a new right sibling node for the given destination node, with the provided value.	 
+	 * @brief Inserts a new right sibling node for the given destination node, with the provided value.
 	 * @param destiny The node to which the right sibling will be inserted.
 	 * @param new_node_value The value to store in the newly created right sibling node.
-	 * @return node A handle to the newly created right sibling node.	 
+	 * @return node A handle to the newly created right sibling node.
 	 * @throws std::invalid_argument If the destination node is null or is the root (cannot have a sibling).
 	 */
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
@@ -466,7 +613,7 @@ public:
 	}
 
 	/**
-	 * @brief Accesses the data stored in the given node.	 
+	 * @brief Accesses the data stored in the given node.
 	 * @param node The node from which to retrieve the data.
 	 * @return T& Reference to the data stored in the node.
 	 * @throws std::invalid_argument If the given node is null.
@@ -483,7 +630,7 @@ public:
 	 * @brief Creates and emplaces the root node of the tree with the given arguments.
 	 * @tparam Args Variadic template parameters representing the types of arguments to be forwarded to the root node constructor.
 	 * @param args Arguments to forward to the root node constructor.
-	 * @return node A handle to the newly created root node.	 
+	 * @return node A handle to the newly created root node.
 	 * @throws std::runtime_error If a root node already exists.
 	 */
 	template<typename ...Args>
@@ -503,11 +650,11 @@ public:
 	}
 
 	/**
-	 * @brief Creates the root node of the tree 
+	 * @brief Creates the root node of the tree
 	 * @param data The value to store in the root node.
 	 * @return node A handle to the newly created root node.
 	 * @throws std::runtime_error If a root node already exists.
-	 */	
+	 */
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	node create_root(U&& data)
 	{
@@ -515,7 +662,7 @@ public:
 	}
 
 	/**
-	 * @brief Retrieves the root node of the tree.	 
+	 * @brief Retrieves the root node of the tree.
 	 */
 	[[nodiscard]] node root() const noexcept
 	{
@@ -523,7 +670,7 @@ public:
 	}
 
 	/**
-	 * @brief Clears all nodes from the tree.	 
+	 * @brief Clears all nodes from the tree.
 	 */
 	void clear()
 	{
@@ -549,9 +696,8 @@ public:
 		m_root = nullptr;
 	}
 
-
 	/**
-	 * @brief Checks whether the tree is empty.	 	 
+	 * @brief Checks whether the tree is empty.
 	 */
 	bool empty() const noexcept
 	{
