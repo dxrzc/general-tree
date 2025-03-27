@@ -171,6 +171,16 @@ public:
 
 		~iterator() { delete m_pimpl; }
 
+		iterator& operator=(const iterator& it)
+		{
+			if (this != &it)
+			{
+				m_itype = it.m_itype;
+				*m_pimpl = *it.m_pimpl;
+			}
+			return *this;
+		}
+
 		using iterator_category = std::forward_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
