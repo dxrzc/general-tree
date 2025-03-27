@@ -2,9 +2,7 @@
 
 #include <utility>
 #include <queue>
-#include <stack>
 #include <stdexcept>
-#include <optional>
 
 template <typename T>
 class general_tree
