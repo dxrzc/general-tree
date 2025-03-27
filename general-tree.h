@@ -199,6 +199,11 @@ public:
 		{
 			return m_pimpl->internal_node() == other.m_pimpl->internal_node();
 		}
+
+		iteration_type iteration_type()
+		{
+			return m_itype;
+		}
 	};
 
 	/**
