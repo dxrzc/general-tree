@@ -220,6 +220,9 @@ public:
 				return iterator(current, itype);
 				break;
 			}	
+			default: 
+				return iterator(m_root, itype);
+			break;
 		}		
 	}
 
