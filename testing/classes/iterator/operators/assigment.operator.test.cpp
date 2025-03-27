@@ -21,5 +21,5 @@ TEST(iterator_class, assigmentOperator_MustShareTheSameIterationType)
 	general_tree<int>::iterator it2;
 	it2 = it1;
 
-	EXPECT_EQ(it1.iteration_type(), it2.iteration_type());
+    EXPECT_EQ(it1.iteration(), it2.iteration());
 }
