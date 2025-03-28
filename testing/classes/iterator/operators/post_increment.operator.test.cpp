@@ -18,10 +18,12 @@ TEST(iterator_class, postIncrementOperator_ReturnIteratorToTheCurrentValue)
 
 TEST(iterator_class, postIncrementOperator_MatchExpectedPreorderTraversal)
 {
+	general_tree<int> test_tree = populated_tree::create();
+
 	std::vector<int> elements;
 	auto order = general_tree<int>::iteration_type::preorder;
 
-	for (auto it = populated_tree::tree.begin(order); it != populated_tree::tree.end(); it++)
+	for (auto it = test_tree.begin(order); it != test_tree.end(); it++)
 		elements.push_back(*it);
 
 	EXPECT_EQ(elements, populated_tree::preorder_vector);
@@ -29,10 +31,12 @@ TEST(iterator_class, postIncrementOperator_MatchExpectedPreorderTraversal)
 
 TEST(iterator_class, postIncrementOperator_MatchExpectedPostOrderTraversal)
 {
+	general_tree<int> test_tree = populated_tree::create();
+
 	std::vector<int> elements;
 	auto order = general_tree<int>::iteration_type::postorder;
 
-	for (auto it = populated_tree::tree.begin(order); it != populated_tree::tree.end(); it++)
+	for (auto it = test_tree.begin(order); it != test_tree.end(); it++)
 		elements.push_back(*it);
 
 	EXPECT_EQ(elements, populated_tree::postorder_vector);

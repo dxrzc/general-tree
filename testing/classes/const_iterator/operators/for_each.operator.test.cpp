@@ -5,10 +5,13 @@
 
 TEST(class_const_iterator, forEachOperator_ShouldUsePreorderByDefault)
 {
+	// const to ensure const_iterator
+	const general_tree<int> test_tree = populated_tree::create();
+
 	std::vector<int> elements;
 	auto order = general_tree<int>::iteration_type::preorder;	
 
-	for (int e : std::as_const(populated_tree::tree))
+	for (int e : test_tree)
 		elements.push_back(e);
 
 	EXPECT_EQ(elements, populated_tree::preorder_vector);
