@@ -570,6 +570,9 @@ public:
 		deep_copy(rhs.root());
 	}
 
+	general_tree(general_tree<T>&& rhs) noexcept
+		: m_root(std::exchange(rhs.m_root, nullptr)) {}
+
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	general_tree(U&& root_value) : general_tree()
 	{
