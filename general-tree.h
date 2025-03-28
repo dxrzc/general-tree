@@ -230,6 +230,9 @@ public:
 			return m_pimpl->internal_node() == other.m_pimpl->internal_node();
 		}
 
+		/**
+		 * @brief Returns the type of iteration
+		 */		
 		iteration_type iteration()
 		{
 			return m_itype;
@@ -305,6 +308,9 @@ public:
 			return m_pimpl->internal_node() == it.m_pimpl->internal_node();
 		}
 
+		/**
+		 * @brief Returns the type of iteration
+		 */
 		iteration_type iteration()
 		{
 			return m_itype;
@@ -328,6 +334,11 @@ public:
 		return const_iterator(pnode, itype);
 	}
 
+	/**
+	 * @brief Returns an const-iterator to the beginning of the tree traversal.
+	 * @param itype The traversal order to use (default is preorder).
+	 * @return An const-iterator positioned at the first node in the specified traversal order.
+	 */
 	[[nodiscard]] const_iterator cbegin(iteration_type itype = iteration_type::preorder) const
 	{
 		private_node* pnode = get_initial_iterator_node(itype);
@@ -342,6 +353,9 @@ public:
 		return iterator(nullptr);
 	}
 
+	/**
+	 * @brief Returns a const-iterator representing the end of the traversal.
+	 */
 	[[nodiscard]] const_iterator end() const
 	{
 		return const_iterator(nullptr);
@@ -582,6 +596,18 @@ public:
 			nullptr,
 			std::forward<U>(root_value)
 		);
+	}
+
+	// TODO: test
+	general_tree& operator=(const general_tree<T>& rhs)
+	{
+		if (this != &rhs)
+		{
+			clear();
+			deep_copy(rhs.root());
+		}
+
+		return *this;
 	}
 
 	~general_tree()
