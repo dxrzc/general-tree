@@ -9,11 +9,13 @@ class general_tree
 {
 public:
 	class node;
+	class iterator;
+	class const_iterator;
 
 	enum class iteration_type
 	{
 		preorder,
-		postorder,		
+		postorder,
 	};
 
 private:
@@ -101,43 +103,43 @@ private:
 		{
 			switch (ttype)
 			{
-				case iteration_type::preorder:
-				{					
-					if (m_pnode->m_left_child != nullptr)
-					{
-						m_pnode = m_pnode->m_left_child;
-					}
-					else if (m_pnode->m_right_sibling != nullptr)
-					{
-						m_pnode = m_pnode->m_right_sibling;
-					}
-					// go up until it finds a right sibling
-					else
-					{
-						m_pnode = m_pnode->m_parent;
-				
-						while (m_pnode != nullptr && m_pnode->m_right_sibling == nullptr)
-							m_pnode = m_pnode->m_parent;
-				
-						if (m_pnode != nullptr)
-							m_pnode = m_pnode->m_right_sibling;
-					}
-
-					break;
-				}
-				
-				case iteration_type::postorder:
+			case iteration_type::preorder:
+			{
+				if (m_pnode->m_left_child != nullptr)
 				{
-					if (m_pnode->m_right_sibling != nullptr)
-					{
-						m_pnode = m_pnode->m_right_sibling;
-						while (m_pnode->m_left_child != nullptr)
-							m_pnode = m_pnode->m_left_child;
-					}
-					else
-						m_pnode = m_pnode->m_parent;
-					break;
+					m_pnode = m_pnode->m_left_child;
 				}
+				else if (m_pnode->m_right_sibling != nullptr)
+				{
+					m_pnode = m_pnode->m_right_sibling;
+				}
+				// go up until it finds a right sibling
+				else
+				{
+					m_pnode = m_pnode->m_parent;
+
+					while (m_pnode != nullptr && m_pnode->m_right_sibling == nullptr)
+						m_pnode = m_pnode->m_parent;
+
+					if (m_pnode != nullptr)
+						m_pnode = m_pnode->m_right_sibling;
+				}
+
+				break;
+			}
+
+			case iteration_type::postorder:
+			{
+				if (m_pnode->m_right_sibling != nullptr)
+				{
+					m_pnode = m_pnode->m_right_sibling;
+					while (m_pnode->m_left_child != nullptr)
+						m_pnode = m_pnode->m_left_child;
+				}
+				else
+					m_pnode = m_pnode->m_parent;
+				break;
+			}
 			}
 		}
 
@@ -151,6 +153,25 @@ private:
 			return m_pnode;
 		}
 	};
+
+	private_node* get_initial_iterator_node(iteration_type itype) const
+	{
+		switch (itype)
+		{
+		case iteration_type::preorder:
+			return m_root;
+		case iteration_type::postorder:
+		{
+			private_node* current = m_root;
+			while (current->m_left_child != nullptr)
+				current = current->m_left_child;
+			return current;
+			break;
+		}
+		default: return m_root;
+			break;
+		}
+	}
 
 public:
 
@@ -179,6 +200,7 @@ public:
 			return *this;
 		}
 
+		friend class const_iterator;
 		using iterator_category = std::forward_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
@@ -208,7 +230,82 @@ public:
 			return m_pimpl->internal_node() == other.m_pimpl->internal_node();
 		}
 
-        iteration_type iteration()
+		iteration_type iteration()
+		{
+			return m_itype;
+		}
+	};
+
+	class const_iterator
+	{
+	private:
+		iterator_impl* m_pimpl;
+		iteration_type m_itype;
+
+	public:
+		const_iterator(private_node* pnode = nullptr, iteration_type itype = iteration_type::preorder)
+			: m_pimpl(new iterator_impl(pnode)), m_itype(itype) {}
+
+		const_iterator(const const_iterator& other)
+			: m_itype(other.m_itype), m_pimpl(new iterator_impl(*other.m_pimpl)) {}
+
+		const_iterator(const iterator& it)
+			: m_itype(it.m_itype), m_pimpl(new iterator_impl(*it.m_pimpl)) {}
+
+		~const_iterator() { delete m_pimpl; }
+
+		const_iterator& operator=(const const_iterator& other)
+		{
+			if (this != &other)
+			{
+				m_itype = other.m_itype;
+				*m_pimpl = *other.m_pimpl;
+			}
+			return *this;
+		}
+
+		const_iterator& operator=(const iterator& it)
+		{			
+			m_itype = it.m_itype;
+			*m_pimpl = *it.m_pimpl;			
+			return *this;
+		}
+
+		using iterator_category = std::forward_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = const T*;
+		using reference = const T&;
+
+		const_iterator& operator++()
+		{
+			m_pimpl->advance(this->m_itype);
+			return *this;
+		}
+
+		const_iterator operator++(int)
+		{
+			auto aux = *this;
+			m_pimpl->advance(this->m_itype);
+			return aux;
+		}
+
+		const T& operator*()
+		{
+			return m_pimpl->get_value();
+		}
+
+		bool operator==(const const_iterator& other) const noexcept
+		{
+			return m_pimpl->internal_node() == other.m_pimpl->internal_node();
+		}
+
+		bool operator==(const iterator& it) const noexcept
+		{
+			return m_pimpl->internal_node() == it.m_pimpl->internal_node();
+		}
+
+		iteration_type iteration()
 		{
 			return m_itype;
 		}
@@ -219,32 +316,40 @@ public:
 	 * @param itype The traversal order to use (default is preorder).
 	 * @return An iterator positioned at the first node in the specified traversal order.
 	 */
-	iterator begin(iteration_type itype = iteration_type::preorder)
+	[[nodiscard]] iterator begin(iteration_type itype = iteration_type::preorder)
 	{
-		switch (itype)
-		{
-			case iteration_type::preorder:
-				return iterator(m_root, itype);
-			case iteration_type::postorder: 
-			{				
-				private_node* current = m_root;
-				while (current->m_left_child != nullptr)
-					current = current->m_left_child;
-				return iterator(current, itype);
-				break;
-			}	
-			default: 
-				return iterator(m_root, itype);
-			break;
-		}		
+		private_node* pnode = get_initial_iterator_node(itype);
+		return iterator(pnode, itype);
+	}
+
+	[[nodiscard]] const_iterator begin(iteration_type itype = iteration_type::preorder) const
+	{
+		private_node* pnode = get_initial_iterator_node(itype);
+		return const_iterator(pnode, itype);
+	}
+
+	[[nodiscard]] const_iterator cbegin(iteration_type itype = iteration_type::preorder) const
+	{
+		private_node* pnode = get_initial_iterator_node(itype);
+		return const_iterator(pnode, itype);
 	}
 
 	/**
 	 * @brief Returns an iterator representing the end of the traversal.
 	 */
-	iterator end()
+	[[nodiscard]] iterator end()
 	{
 		return iterator(nullptr);
+	}
+
+	[[nodiscard]] const_iterator end() const
+	{
+		return const_iterator(nullptr);
+	}
+
+	[[nodiscard]] const_iterator cend() const
+	{
+		return const_iterator(nullptr);
 	}
 
 	// public node interface
