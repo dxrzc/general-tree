@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(iterator_class, equalityOperator_ReturnTrueIfPointingToTheSameValue)
+TEST(class_iterator, equalityOperator_ReturnTrueIfPointingToTheSameValue)
 {
 	general_tree<int> tree(0);
 
@@ -11,7 +11,7 @@ TEST(iterator_class, equalityOperator_ReturnTrueIfPointingToTheSameValue)
 	EXPECT_TRUE(it1 == it2);
 }
 
-TEST(iterator_class, equalityOperator_ReturnFalseIfNotPointingToTheSameValue)
+TEST(class_iterator, equalityOperator_ReturnFalseIfNotPointingToTheSameValue)
 {
 	general_tree<int> tree(0);
 

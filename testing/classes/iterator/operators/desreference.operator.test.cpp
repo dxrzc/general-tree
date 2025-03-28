@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(iterator_class, desreferenceOperator_ReturnDataInNode)
+TEST(class_iterator, desreferenceOperator_ReturnDataInNode)
 {
 	const int data = 11313;
 	general_tree<int> tree(data);

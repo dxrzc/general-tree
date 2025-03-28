@@ -3,7 +3,7 @@
 #include "general-tree.h"
 #include "populated_tree.helper.h"
 
-TEST(iterator_class, forEachOperator_ShouldUsePreorderByDefault)
+TEST(class_iterator, forEachOperator_ShouldUsePreorderByDefault)
 {	
 	general_tree<int> test_tree = populated_tree::create();
 

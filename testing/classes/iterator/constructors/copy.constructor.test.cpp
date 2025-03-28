@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(iterator_class, copyConstructor_MustPointToTheSameValue)
+TEST(class_iterator, copyConstructor_MustPointToTheSameValue)
 {
 	const int data = 11313;
 	general_tree<int> tree(data);
@@ -12,7 +12,7 @@ TEST(iterator_class, copyConstructor_MustPointToTheSameValue)
 	EXPECT_EQ(*it1, *it2);
 }
 
-TEST(iterator_class, copyConstructor_MustShareTheSameIterationType)
+TEST(class_iterator, copyConstructor_MustShareTheSameIterationType)
 {	
 	general_tree<int> tree(11313);
 
