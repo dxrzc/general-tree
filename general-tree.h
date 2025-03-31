@@ -90,6 +90,44 @@ private:
 		}
 	}
 
+	// - handles null node
+	// - sets the involved pointers to nullptr
+	void delete_from_node(private_node* pnode)
+	{		
+		if (pnode == nullptr) return;
+		const bool is_root = (pnode->m_parent == nullptr);
+		const bool is_left_child = !is_root && (pnode == pnode->m_parent->m_left_child);
+		const bool is_right_sibling = !is_root && !is_left_child;
+
+		if (is_left_child)
+			// set new left child
+			pnode->m_parent->m_left_child = pnode->m_right_sibling;
+		
+		if (is_right_sibling)
+		{
+			private_node* aux = pnode->m_parent->m_left_child;
+			while (aux->m_right_sibling != pnode)
+				aux = aux->m_right_sibling;
+			aux->m_right_sibling = pnode->m_right_sibling;
+		}
+	
+		// Breadth First Algorithm
+		std::queue<private_node*> queue;
+		queue.push(pnode);
+
+		private_node* current = nullptr;
+		while (!queue.empty())
+		{
+			current = queue.front();
+			queue.pop();
+
+			for (private_node* child = current->m_left_child; child != nullptr; child = child->m_right_sibling)
+				queue.push(child);
+
+			delete current;
+		}
+	}
+
 	// pimpl technique
 	class iterator_impl
 	{
@@ -824,26 +862,18 @@ public:
 	 */
 	void clear()
 	{
-		if (m_root == nullptr)
-			return;
-
-		std::queue<private_node*> queue;
-		queue.push(m_root);
-
-		private_node* current = nullptr;
-		while (!queue.empty())
-		{
-			// Add the children to the stack and delete the parent
-			current = queue.front();
-			queue.pop();
-
-			for (private_node* child = current->m_left_child; child != nullptr; child = child->m_right_sibling)
-				queue.push(child);
-
-			delete current;
-		}
-
+		delete_from_node(m_root);
 		m_root = nullptr;
+	}
+
+	void delete_left_child(node n)
+	{
+		delete_from_node(n.m_node->m_left_child);
+	}
+
+	void delete_right_sibling(node n)
+	{
+		delete_from_node(n.m_node->m_right_sibling);
 	}
 
 	/**
