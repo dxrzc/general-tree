@@ -1,4 +1,5 @@
 #include "test_resource.helper.h"
+#include <cassert>
 
 thread_local unsigned test_resource::instances_created = 0;
 thread_local unsigned test_resource::move_constructor_calls = 0;
@@ -15,6 +16,8 @@ void test_resource::reset_calls_count() noexcept
 
 std::size_t test_resource::populate_tree_resource(general_tree<test_resource>& test_resource)
 {
+	assert(test_resource.empty());
+
 	test_resource.emplace_root("10", 10);
 	auto n20 = test_resource.emplace_left_child(test_resource.root(), "20", 20);
 	auto n30 = test_resource.emplace_left_child(test_resource.root(), "30", 30);
