@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#pragma once
+#include "general-tree.h"
 
 class test_resource
 {
@@ -15,13 +17,7 @@ public:
 	static thread_local unsigned destructor_calls;
 
 	// this function does not resets destructor_calls!!
-	static void reset_calls_count() noexcept
-	{
-		instances_created = 0;
-		copy_constructor_calls = 0;
-		move_constructor_calls = 0;
-		destructor_calls = 0;
-	}
+	static void reset_calls_count() noexcept;
 
 	test_resource() = delete;
 
@@ -43,6 +39,8 @@ public:
 	{
 		++move_constructor_calls;
 	}
+
+	static std::size_t populate_tree_resource(general_tree<test_resource>& test_resource);
 
 	~test_resource() { ++destructor_calls; }
 };
