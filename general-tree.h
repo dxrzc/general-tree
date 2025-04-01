@@ -93,7 +93,7 @@ private:
 	// - handles null node
 	// - sets the involved pointers to nullptr
 	void delete_from_node(private_node* pnode)
-	{		
+	{
 		if (pnode == nullptr) return;
 		const bool is_root = (pnode->m_parent == nullptr);
 		const bool is_left_child = !is_root && (pnode == pnode->m_parent->m_left_child);
@@ -102,7 +102,7 @@ private:
 		if (is_left_child)
 			// set new left child
 			pnode->m_parent->m_left_child = pnode->m_right_sibling;
-		
+
 		if (is_right_sibling)
 		{
 			private_node* aux = pnode->m_parent->m_left_child;
@@ -110,7 +110,7 @@ private:
 				aux = aux->m_right_sibling;
 			aux->m_right_sibling = pnode->m_right_sibling;
 		}
-	
+
 		// Breadth First Algorithm
 		std::queue<private_node*> queue;
 		queue.push(pnode);
@@ -270,7 +270,7 @@ public:
 
 		/**
 		 * @brief Returns the type of iteration
-		 */		
+		 */
 		iteration_type iteration()
 		{
 			return m_itype;
@@ -306,9 +306,9 @@ public:
 		}
 
 		const_iterator& operator=(const iterator& it)
-		{			
+		{
 			m_itype = it.m_itype;
-			*m_pimpl = *it.m_pimpl;			
+			*m_pimpl = *it.m_pimpl;
 			return *this;
 		}
 
@@ -624,6 +624,52 @@ public:
 
 	general_tree(general_tree<T>&& rhs) noexcept
 		: m_root(std::exchange(rhs.m_root, nullptr)) {}
+
+	bool operator==(const general_tree<T>& other) const noexcept
+	{
+		// Breadth First Algorithm
+		// Compare the children of every node
+
+		if (m_root == other.m_root)
+			return true;
+
+		if (m_root == nullptr || other.m_root == nullptr)
+			return false;
+
+		if (m_root->m_data != other.m_root->m_data)
+			return false;
+
+		std::queue<std::pair<private_node*, private_node*>> compared_nodes;
+		compared_nodes.push({ m_root, other.m_root });
+
+		while (!compared_nodes.empty())
+		{
+			private_node* left_tree_node = compared_nodes.front().first;
+			private_node* right_tree_node = compared_nodes.front().second;
+			compared_nodes.pop();
+
+			private_node* left_tree_node_child = left_tree_node->m_left_child;
+			private_node* right_tree_child_to_compare = right_tree_node->m_left_child;
+
+			// compare children of the current nodes
+			while (left_tree_node_child != nullptr && right_tree_child_to_compare != nullptr)
+			{
+				if (left_tree_node_child->m_data != right_tree_child_to_compare->m_data)
+					return false;
+				
+				compared_nodes.push({ left_tree_node_child, right_tree_child_to_compare });
+				
+				right_tree_child_to_compare = right_tree_child_to_compare->m_right_sibling;
+				left_tree_node_child = left_tree_node_child->m_right_sibling;
+			}
+
+			// a node contains more children than the other
+			if (left_tree_node_child != nullptr || right_tree_child_to_compare != nullptr)
+				return false;
+		}
+
+		return true;
+	}
 
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	general_tree(U&& root_value) : general_tree()
