@@ -687,7 +687,6 @@ public:
 		);
 	}
 
-	// TODO: test
 	general_tree& operator=(const general_tree<T>& rhs)
 	{
 		if (this != &rhs)
