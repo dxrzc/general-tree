@@ -52,6 +52,9 @@ private:
 
 	void deep_copy(node n)
 	{
+		// Breadth First Algorithm
+		// Copy the children of each node
+
 		if (n.m_node == nullptr)
 			return;
 
@@ -112,6 +115,8 @@ private:
 		}
 
 		// Breadth First Algorithm
+		// Save the children in the queue and delete the parent
+
 		std::queue<private_node*> queue;
 		queue.push(pnode);
 
@@ -628,7 +633,7 @@ public:
 	bool operator==(const general_tree<T>& other) const noexcept
 	{
 		// Breadth First Algorithm
-		// Compare the children of every node
+		// Compare the children of each node
 
 		if (m_root == other.m_root)
 			return true;
@@ -638,7 +643,7 @@ public:
 
 		if (m_root->m_data != other.m_root->m_data)
 			return false;
-
+		
 		std::queue<std::pair<private_node*, private_node*>> compared_nodes;
 		compared_nodes.push({ m_root, other.m_root });
 
