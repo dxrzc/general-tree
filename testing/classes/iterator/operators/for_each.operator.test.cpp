@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <vector>
-#include "general-tree.h"
 #include "populated_tree.helper.h"
 
 TEST(class_iterator, forEachOperator_preorderIsTheIterationType)

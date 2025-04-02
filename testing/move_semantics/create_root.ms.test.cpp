@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "general-tree.h"
 #include "move_semantics.fixture.h"
 
 TEST_F(move_semantics_fixture, create_root_ByCopy)

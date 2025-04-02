@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-#pragma once
-#include "general-tree.h"
+#include "general_tree.h"
 
 class test_resource
 {

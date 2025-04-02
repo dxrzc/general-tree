@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "general-tree.h"
+#include "general_tree.h"
 
 TEST(class_node, has_left_child_ReturnTrueIfNodeHasLeftChild)
 {

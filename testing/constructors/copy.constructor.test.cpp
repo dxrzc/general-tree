@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "general-tree.h"
 #include "test_resource.helper.h"
 
 class copy_constructor : public ::testing::Test

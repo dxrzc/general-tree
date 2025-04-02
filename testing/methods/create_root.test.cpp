@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "general-tree.h"
+#include "general_tree.h"
 
 TEST(create_root, throwRuntimeExceptionIfRootAlreadyExists) {
 	general_tree<int> test_tree;

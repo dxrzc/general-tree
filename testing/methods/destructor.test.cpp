@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "general-tree.h"
 #include "test_resource.helper.h"
 
 class destructor : public ::testing::Test
