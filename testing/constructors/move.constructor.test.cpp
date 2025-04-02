@@ -11,12 +11,12 @@ class move_constructor : public ::testing::Test
 	}
 };
 
-TEST_F(move_constructor, rhsTreeRemainsEmpty)
+TEST_F(move_constructor, rhsTreeIsEmptyAfterOperation)
 {
-	general_tree<int> test_tree = populated_tree::create();
-	general_tree<int> new_tree(std::move(test_tree));
+    general_tree<int> rhs_tree = populated_tree::create();
+    general_tree<int> new_tree(std::move(rhs_tree));
 
-	EXPECT_TRUE(test_tree.empty());
+    EXPECT_TRUE(rhs_tree.empty());
 }
 
 TEST_F(move_constructor, noElementIsCopiedOrMoved)
@@ -33,14 +33,12 @@ TEST_F(move_constructor, noElementIsCopiedOrMoved)
 	EXPECT_EQ(test_resource::move_constructor_calls, 0);	
 }
 
-TEST_F(move_constructor, treeContainsAllTheNodesAfterOperation)
+TEST_F(move_constructor, newTreeIsEqualToTheRhsTree)
 {
-	general_tree<int> test_tree = populated_tree::create();
-	std::size_t test_tree_size= test_tree.root().descendants_count() + 1;
+    general_tree<int> rhs_tree = populated_tree::create();
+    auto rhs_tree_copy = rhs_tree;
 
-	general_tree<int> new_tree(std::move(test_tree));
-	std::size_t new_tree_size = new_tree.root().descendants_count() + 1;
+    general_tree<int> new_tree (std::move(rhs_tree));
 
-	EXPECT_EQ(new_tree_size, test_tree_size);
+    EXPECT_EQ(rhs_tree_copy, new_tree);
 }
-

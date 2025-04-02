@@ -10,7 +10,7 @@ class copy_constructor : public ::testing::Test
 	}
 };
 
-TEST(copy_constructor, noModificationsIfRhsTreeIsEmpty)
+TEST(copy_constructor, doNotModifyTreesIfBothAreEmpty)
 {
 	general_tree<int> tree;
 	general_tree<int> copy = tree;
@@ -21,20 +21,16 @@ TEST(copy_constructor, noModificationsIfRhsTreeIsEmpty)
 
 TEST(copy_constructor, makeOneCopyPerElement)
 {
-	general_tree<test_resource> resources;
-	resources.emplace_root("0", 0);
-	resources.emplace_left_child(resources.root(), "1", 1);
-	resources.emplace_right_sibling(resources.root().left_child(), "2", 2);
-	resources.emplace_left_child(resources.root().left_child(), "3", 3);
-	resources.emplace_right_sibling(resources.root().left_child().left_child(), "4", 4);
+    general_tree<test_resource> tree;
+    std::size_t tree_size = test_resource::populate_tree_resource(tree);
 
-	general_tree<test_resource> copy = resources;
+    general_tree<test_resource> copy = tree;
 
-	EXPECT_EQ(test_resource::copy_constructor_calls, 5);
-	EXPECT_EQ(test_resource::instances_created, 10);
+    EXPECT_EQ(test_resource::copy_constructor_calls, tree_size);
+    EXPECT_EQ(test_resource::instances_created, tree_size * 2);
 }
 
-TEST(copy_constructor, notModifiesRhsTree)
+TEST(copy_constructor, doNotModifyRhsTree)
 {
 	general_tree<int> tree(0);
 	tree.insert_left_child(tree.root(), 1);
