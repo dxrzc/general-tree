@@ -573,6 +573,28 @@ public:
 			return count;
 		}
 
+		/**
+		 * @brief Computes the depth of the current node in the tree.		 
+		 * @throws std::invalid_argument if the node is null.
+		 * @return std::size_t The depth of the node.
+		 */
+		[[nodiscard]] std::size_t depth() const
+		{
+			if(m_node == nullptr)
+				throw std::invalid_argument("Cannot get depth of null node");
+
+			private_node* aux = m_node;
+			std::size_t depth = 0;
+
+			while (aux->m_parent != nullptr)
+			{
+				++depth;
+				aux = aux->m_parent;
+			}
+
+			return depth;
+		}
+
 		/*
 		 * @brief Checks if the node is the root of the tree.
 		 * @return true if the node is the root, false otherwise.
