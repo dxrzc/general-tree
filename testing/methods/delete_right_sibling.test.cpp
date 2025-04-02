@@ -40,7 +40,7 @@ TEST_F(delete_right_sibling, deleteRightSiblingAndAllItsNodes)
 	EXPECT_EQ(test_resource::destructor_calls, right_sibling_tree_size);
 }
 
-TEST_F(delete_right_sibling, IfRightSiblingWasTheLastSiblingSetTheNewRightSiblingAsNullptr)
+TEST_F(delete_right_sibling, rightSiblingOfThePreviousSiblingIsNowNull)
 {
 	// Before: left_sibling -> right_sibling -> nullptr
 	// After: left_sibling  -> nullptr
@@ -57,7 +57,7 @@ TEST_F(delete_right_sibling, IfRightSiblingWasTheLastSiblingSetTheNewRightSiblin
 	EXPECT_TRUE(left_sibling.right_sibling().is_null());
 }
 
-TEST_F(delete_right_sibling, ifRightSiblingWasNotTheLastSiblingSetTheNewRightSibling)
+TEST_F(delete_right_sibling, rightSiblingOfThePreviousSiblingIsNowTheNextRightSibling)
 {
 	// Before: left_sibling -> right_sibling -> last_sibling
 	// After: left_sibling  -> last_sibling

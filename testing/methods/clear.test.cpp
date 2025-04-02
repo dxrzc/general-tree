@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(clear, noFatalFailureIfItsCalledBeforeDestructor)
+TEST(clear, callingBeforeDestructorDoesNotCauseFatalFailure)
 {
 	EXPECT_NO_FATAL_FAILURE({
 		general_tree<int> tree;

@@ -39,13 +39,13 @@ TEST_F(delete_left_child, deleteLeftChildAndAllItsNodes)
 	EXPECT_EQ(test_resource::destructor_calls, left_tree_size);
 }
 
-TEST_F(delete_left_child, leftChildPointerOfParentShouldBeNullptr)
+TEST_F(delete_left_child, parentLeftChildIsNowNull)
 {
 	// Before:
 	/*
 	   parent 
 	   /
-	  left_child
+      left_child -> nullptr
 
 	*/
 
@@ -71,7 +71,7 @@ TEST_F(delete_left_child, leftChildPointerOfParentShouldBeNullptr)
 	EXPECT_TRUE(parent_node.left_child().is_null());
 }
 
-TEST_F(delete_left_child, ifLeftChildHasRightSiblingThisShouldBeTheNewLeftChild)
+TEST_F(delete_left_child, parentLeftChildIsNowTheNextChildren)
 {
 	// Before:
 	/*

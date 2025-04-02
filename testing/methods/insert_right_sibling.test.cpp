@@ -38,7 +38,9 @@ TEST(insert_right_sibling, returnNodePointingToTheNewInsertedTreeRoot)
 
 TEST(insert_right_sibling, throwInvalidArgumentIfTreeIsInsertedToItself)
 {
-	EXPECT_TRUE(true);
+    general_tree<int> destiny(1);
+    // try to insert a tree as its own left child
+    EXPECT_THROW(destiny.insert_right_sibling(destiny.root(), destiny), std::invalid_argument);
 }
 
 TEST(insert_right_sibling, destinyNodeDoesNotSufferChangesIfEmptyTreeIsInserted)

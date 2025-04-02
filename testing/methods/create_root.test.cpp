@@ -23,13 +23,26 @@ TEST(create_root, returnANodePointingToRoot)
 	EXPECT_EQ(result, test_tree.root());
 }
 
-TEST(create_root, rootParentRightSiblingAndLeftChildShouldBeNull)
+TEST(create_root, parentOfRootIsBeNull)
 {
-	general_tree<int> tree;
-	tree.create_root(1);
+    general_tree<int> tree;
+    tree.create_root(1);
 
-	general_tree<int>::node root = tree.root();
-	EXPECT_TRUE(root.parent().is_null());
-	EXPECT_TRUE(root.right_sibling().is_null());
-	EXPECT_TRUE(root.left_child().is_null());
+    EXPECT_TRUE(tree.root().parent().is_null());
+}
+
+TEST(create_root, rightSiblingOfRootiIsNull)
+{
+    general_tree<int> tree;
+    tree.create_root(1);
+
+    EXPECT_TRUE(tree.root().right_sibling().is_null());
+}
+
+TEST(create_root, leftChildOfRootiIsNull)
+{
+    general_tree<int> tree;
+    tree.create_root(1);
+
+    EXPECT_TRUE(tree.root().left_child().is_null());
 }

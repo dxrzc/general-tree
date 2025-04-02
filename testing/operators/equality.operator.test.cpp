@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
-#include "populated_tree.helper.h"
 
 TEST(equalityOperator, returnTrueIfBothTreeAreEmpty)
 {
@@ -66,12 +65,12 @@ TEST(equalityOperator, returnFalseIfTreesHaveDifferentDataButSameStructure)
     general_tree<int> left_tree;
     auto root1 = left_tree.create_root(1);
     auto child1 = left_tree.insert_left_child(root1, 2);
-    auto sibling1 = left_tree.insert_right_sibling(child1, 3);
+    left_tree.insert_right_sibling(child1, 3);
 
     general_tree<int> right_tree;
     auto root2 = right_tree.create_root(1);
     auto child2 = right_tree.insert_left_child(root2, 5); // Different value
-    auto sibling2 = right_tree.insert_right_sibling(child2, 3);
+    right_tree.insert_right_sibling(child2, 3);
 
     EXPECT_FALSE(left_tree == right_tree);
 }
@@ -109,13 +108,13 @@ TEST(equalityOperator, returnTrueForIdenticalTrees)
     general_tree<int> left_tree;
     auto root1 = left_tree.create_root(100);
     auto child1 = left_tree.insert_left_child(root1, 200);
-    auto child2 = left_tree.insert_right_sibling(child1, 300);
+    left_tree.insert_right_sibling(child1, 300);
     left_tree.insert_left_child(child1, 400);
 
     general_tree<int> right_tree;
     auto root2 = right_tree.create_root(100);
     auto child3 = right_tree.insert_left_child(root2, 200);
-    auto child4 = right_tree.insert_right_sibling(child3, 300);
+    right_tree.insert_right_sibling(child3, 300);
     right_tree.insert_left_child(child3, 400);
 
     EXPECT_TRUE(left_tree == right_tree);

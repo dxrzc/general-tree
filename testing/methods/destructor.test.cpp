@@ -10,14 +10,14 @@ class destructor : public ::testing::Test
 	}
 };
 
-TEST_F(destructor, noFatalFailureIfTreeIsEmpty)
+TEST_F(destructor, emptyTreeDoesNotCauseFatalFailure)
 {
 	EXPECT_NO_FATAL_FAILURE({
 		general_tree<int> test_tree;
 	});
 }
 
-TEST_F(destructor, ifTreeContainsOneElementThenDestroyOneElement)
+TEST_F(destructor, treeContainsOnlyRoot)
 {
 	{
 		general_tree<test_resource> test_tree;
@@ -33,8 +33,8 @@ TEST_F(destructor, deleteAllNodes)
 		auto root = test_tree.emplace_root("root", 1);
 		auto child1 = test_tree.emplace_left_child(root, "child1", 2);
 		auto child2 = test_tree.emplace_left_child(root, "child2", 3);
-		auto child3 = test_tree.emplace_left_child(child1, "child3", 4);
-		auto child4 = test_tree.emplace_left_child(child2, "child4", 5);
+        test_tree.emplace_left_child(child1, "child3", 4);
+        test_tree.emplace_left_child(child2, "child4", 5);
 	}
 	EXPECT_EQ(test_resource::destructor_calls, 5);
 }
