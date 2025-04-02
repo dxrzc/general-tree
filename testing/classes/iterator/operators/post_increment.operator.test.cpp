@@ -3,12 +3,12 @@
 #include "general-tree.h"
 #include "populated_tree.helper.h"
 
-TEST(class_iterator, postIncrementOperator_ReturnIteratorToTheCurrentValue)
+TEST(class_iterator, postIncrementOperator_returnIteratorToTheCurrentValue)
 {
-	const int root = 1;
-	general_tree<int> tree(root);
-	const int next = 100;
-	tree.insert_left_child(tree.root(), next);
+    const int root = 1232332;
+    general_tree<int> tree(root);
+
+    tree.insert_left_child(tree.root(), 100);
 
 	general_tree<int>::iterator it = tree.begin(general_tree<int>::iteration_type::preorder);
 	general_tree<int>::iterator before_advance= it++;
@@ -16,7 +16,7 @@ TEST(class_iterator, postIncrementOperator_ReturnIteratorToTheCurrentValue)
 	EXPECT_EQ(*before_advance, root);
 }
 
-TEST(class_iterator, postIncrementOperator_MatchExpectedPreorderTraversal)
+TEST(class_iterator, postIncrementOperator_preorderTraversal)
 {
 	general_tree<int> test_tree = populated_tree::create();
 
@@ -29,7 +29,7 @@ TEST(class_iterator, postIncrementOperator_MatchExpectedPreorderTraversal)
 	EXPECT_EQ(elements, populated_tree::preorder_vector);
 }
 
-TEST(class_iterator, postIncrementOperator_MatchExpectedPostOrderTraversal)
+TEST(class_iterator, postIncrementOperator_postOrderTraversal)
 {
 	general_tree<int> test_tree = populated_tree::create();
 

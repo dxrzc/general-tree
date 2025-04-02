@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "general-tree.h"
 
-TEST(class_iterator, assigmentOperator_MustPointToTheSameValue)
+TEST(class_iterator, assigmentOperator_iteratorsPointToTheSameNode)
 {
 	const int data = 11313;
 	general_tree<int> tree(data);
@@ -13,7 +13,7 @@ TEST(class_iterator, assigmentOperator_MustPointToTheSameValue)
 	EXPECT_EQ(*it1, *it2);
 }
 
-TEST(class_iterator, assigmentOperator_MustShareTheSameIterationType)
+TEST(class_iterator, assigmentOperator_iteratorsHaveTheSameIterationType)
 {
 	general_tree<int> tree(11313);
 
