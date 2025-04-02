@@ -3,7 +3,7 @@
 #include "general-tree.h"
 #include "populated_tree.helper.h"
 
-TEST(class_const_iterator, forEachOperator_ShouldUsePreorderByDefault)
+TEST(class_const_iterator, forEachOperator_preorderIsTheIterationType)
 {
 	// const to ensure const_iterator
 	const general_tree<int> test_tree = populated_tree::create();
